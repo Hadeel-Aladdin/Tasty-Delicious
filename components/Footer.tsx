@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { montez, zain } from "../app/font";
 
-export function Footer() {
+function Footer() {
     return (
         <footer className="bg-cream text-cream dark:bg-zinc-950 dark:text-zinc-300 pt-12 pb-8 border-t border-mustard/20">
             <div className={`${zain.className} max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8`}>
@@ -10,7 +10,7 @@ export function Footer() {
                 <div className="flex items-center gap-3">
                     <Image
                         src="/icon.png"
-                        alt="Logo"
+                        alt="T& D Logo"
                         width={32}
                         height={32}
                         className="w-auto h-auto m-3"

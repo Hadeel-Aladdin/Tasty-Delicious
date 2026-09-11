@@ -10,7 +10,7 @@ function Header() {
             <div className="flex items-center gap-2">
                 <Image
                     src="/icon.png"
-                    alt="Logo"
+                    alt="T& D Logo"
                     width={32}
                     height={32}
                     className="h-auto w-auto m-3"
@@ -27,11 +27,11 @@ function Header() {
                     المنيو
                 </a>
 
-                <a href="#about" className="hover:text-mustard transition-colors cursor-pointer">
+                <a href="#story" className="hover:text-mustard transition-colors cursor-pointer">
                     قصتنا
                 </a>
 
-                <a href="#offers" className="hover:text-mustard transition-colors cursor-pointer">
+                <a href="#chif-tips" className="hover:text-mustard transition-colors cursor-pointer">
                     أسرار الشيف
                 </a>
 

@@ -4,7 +4,7 @@ import { montez, zain } from "../app/font";
 
 function Header() {
     return (
-        <header className="flex fixed top-0 w-full h-20 items-center bg-cream justify-between p-4 dark:bg-espresso z-50">
+        <header className="flex top-0 w-full h-20 items-center bg-cream justify-between p-4 dark:bg-espresso z-50">
 
             {/* T&D */}
             <div className="flex items-center gap-2">

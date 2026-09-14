@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Aref_Ruqaa, Zain } from 'next/font/google';
 import {
     Flame,
@@ -25,6 +26,111 @@ const zain = Zain({
     subsets: ['arabic'],
 });
 
+/* =====================================================
+    Exploded-stack layer builder
+    - No fixed pixel positions -> no empty gaps.
+    - Each layer only takes space in the stack if its
+      image actually exists for the selected box.
+===================================================== */
+
+type StackLayer = {
+    key: string;
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+    marginTop: number; // negative = overlap with the layer above it
+};
+
+const SIZE = {
+    bun: { width: 210, height: 85 },
+    bottomBun: { width: 210, height: 70 },
+    sauce: { width: 155, height: 45 },     // ketchup / mayo / box sauces
+    wide: { width: 170, height: 55 },      // pickles / halapino
+    cheese: { width: 190, height: 45 },
+    patty: { width: 180, height: 55 },
+};
+
+const RANCH_SAUCE: ImgDetails = {
+    id: 'ranch-sauce',
+    image: '/products/ranch-sauce.png',
+    alt: 'صوص رانش',
+};
+
+function buildStack(box: Box): StackLayer[] {
+    const layers: StackLayer[] = [];
+
+    const push = (
+        key: string,
+        img: ImgDetails | null | undefined,
+        size: { width: number; height: number },
+        overlap: number
+    ) => {
+        if (!img?.image) return;
+        layers.push({
+            key,
+            src: img.image,
+            alt: img.alt,
+            width: size.width,
+            height: size.height,
+            marginTop: layers.length === 0 ? 0 : -overlap,
+        });
+    };
+
+    const isTD = box.id === 'T&D box';
+
+    push('top-bun', box.images.topBun, SIZE.bun, 0);
+    push('ketchup', box.images.Ketchup, SIZE.sauce, 10);
+    push('pickles', box.images.pickles, SIZE.wide, 25);
+    push('halapino', box.images.Halapino, SIZE.wide, 25);
+    push('cheddar-top', box.images.cheddar, SIZE.cheese, 25);
+    push('burger1', box.images.burger1, SIZE.patty, 20);
+
+    if (isTD) {
+        // ترتيب خاص لـ T&D Box: صوص بين كل طبقتين لحمة/فراخ مختلفين
+        push('taxas-sauce', box.images.boxSauce, SIZE.sauce, 15); // بين burger1 و burger2
+        push('burger2', box.images.burger2, SIZE.patty, 20);
+        push('cheddar-sauce', box.images.cheddar, SIZE.sauce, 15); // بين burger2 و burger3
+        push('burger3', box.images.burger3, SIZE.patty, 20);
+        push('ranch-sauce', RANCH_SAUCE, SIZE.sauce, 15);          // بين burger3 و burger4
+        push('burger4', box.images.burger4, SIZE.patty, 20);
+    } else {
+        push('box-sauce', box.images.boxSauce, SIZE.sauce, 15);
+        push('burger3', box.images.burger3, SIZE.patty, 20);
+        // احتياطي لو أي بوكس مستقبلي فيه burger2/burger4 من غير ما يكون T&D
+        push('burger2', box.images.burger2, SIZE.patty, 20);
+        push('burger4', box.images.burger4, SIZE.patty, 20);
+    }
+
+    push('mayo', box.images.Mayo, SIZE.sauce, 15);
+    push('bottom-bun', box.images.bottomBun, SIZE.bottomBun, 25);
+
+    return layers;
+}
+
+/* =====================================================
+    تصنيف البوكسات حسب عدد اللحمات/النكهات الظاهرة
+    (بيتحدد بيها حجم دخان الخلفية بس - الطول بقى تلقائي)
+===================================================== */
+
+type StackVariant = 'single' | 'double' | 'quad';
+
+function getStackVariant(box: Box): StackVariant {
+    const singleIds = ['classic-box', 'volcano-box', 'grill-cordon-box', 'fried-cordon-box'];
+    const doubleIds = ['matching-box', 'cordon-mix-box', 'bbq-box'];
+
+    if (box.id === 'T&D box') return 'quad';
+    if (doubleIds.includes(box.id)) return 'double';
+    if (singleIds.includes(box.id)) return 'single';
+    return 'single';
+}
+
+const SMOKE_SCALE: Record<StackVariant, number> = {
+    single: 1,
+    double: 1.15,
+    quad: 1.35,
+};
+
 export default function MenuSection() {
 
     // Default displayed box and quantity
@@ -43,7 +149,7 @@ export default function MenuSection() {
     };
 
 
-    // Box categorization
+    // Box categorization (selector groups)
 
     const beefBoxes = [
         boxes.find((box) => box.id === 'classic-box'),
@@ -83,16 +189,10 @@ export default function MenuSection() {
         setQuantity(1);
     };
 
-    // Extract burger images for the circles
+    // Stack + variant for the currently selected box
 
-    const getBurgerImages = (box: Box): ImgDetails[] => {
-        return [
-            box.images.burger1,
-            box.images.burger2,
-            box.images.burger3,
-            box.images.burger4,
-        ].filter((img): img is ImgDetails => Boolean(img));
-    };
+    const stack = buildStack(selectedBox);
+    const variant = getStackVariant(selectedBox);
 
     // Main function that changes the info displayed on the UI according to the selected box
 
@@ -193,9 +293,9 @@ export default function MenuSection() {
             id="menu"
             dir="rtl"
             className="
-                bg-[#f8f1e3]
+                bg-cream/30
                 w-full
-                min-h-[calc(100vh-80px)]
+                h-screen
                 mt-20
                 flex
                 items-center
@@ -203,6 +303,7 @@ export default function MenuSection() {
                 px-4
                 md:px-10
                 py-6
+                overflow-y-auto
             "
         >
             <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -213,126 +314,131 @@ export default function MenuSection() {
 
                 <div className="lg:col-span-7 flex flex-col justify-between h-full space-y-6">
 
-                    {/* =========================
-                        تفاصيل البوكس
-                    ========================= */}
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={`${selectedBox.id}-info`}
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -12 }}
+                            transition={{ duration: 0.28, ease: 'easeInOut' }}
+                            className="space-y-3"
+                        >
 
-                    <div className="space-y-3">
+                            <div className="flex items-center gap-3 flex-wrap">
 
-                        <div className="flex items-center gap-3 flex-wrap">
+                                <h2
+                                    className={`
+                                        ${aref.className}
+                                        text-4xl
+                                        md:text-5xl
+                                        text-espresso
+                                        font-bold
+                                    `}
+                                >
+                                    {selectedBox.name}
+                                </h2>
 
-                            <h2
+                                {/* Volcano */}
+                                {selectedBox.id === 'volcano-box' && (
+                                    <span
+                                        className="
+                                            bg-volcano
+                                            text-white
+                                            text-xs
+                                            px-3
+                                            py-1
+                                            rounded-full
+                                            flex
+                                            items-center
+                                            gap-1
+                                            shadow
+                                        "
+                                    >
+                                        <Flame
+                                            className="w-3.5 h-3.5"
+                                            fill="white"
+                                        />
+                                        سبايسي
+                                    </span>
+                                )}
+
+                                {/* T&D / Special Taste */}
+                                {selectedBox.id === 'T&D box' && (
+                                    <span
+                                        className="
+                                            bg-mustard
+                                            text-espresso
+                                            text-xs
+                                            px-3
+                                            py-1
+                                            rounded-full
+                                            flex
+                                            items-center
+                                            gap-1
+                                            shadow
+                                            font-bold
+                                        "
+                                    >
+                                        <Crown
+                                            className="w-3.5 h-3.5"
+                                            fill="#553e2b"
+                                        />
+                                        Bestseller
+                                    </span>
+                                )}
+
+                            </div>
+
+                            <p
                                 className={`
-                                    ${aref.className}
-                                    text-4xl
-                                    md:text-5xl
-                                    text-espresso
-                                    font-bold
+                                    ${zain.className}
+                                    text-lg
+                                    md:text-xl
+                                    text-espresso/80
                                 `}
                             >
-                                {selectedBox.name}
-                            </h2>
+                                {selectedBox.description}
+                            </p>
 
-                            {/* Volcano */}
-                            {selectedBox.id === 'volcano-box' && (
-                                <span
-                                    className="
-                                        bg-volcano
-                                        text-white
-                                        text-xs
-                                        px-3
-                                        py-1
-                                        rounded-full
-                                        flex
-                                        items-center
-                                        gap-1
-                                        shadow
-                                    "
-                                >
-                                    <Flame
-                                        className="w-3.5 h-3.5"
-                                        fill="white"
-                                    />
-                                    سبايسي
-                                </span>
-                            )}
+                            {/* =========================
+                                محتويات البوكس
+                            ========================= */}
 
-                            {/* T&D / Special Taste */}
-                            {selectedBox.id === 'T&D box' && (
-                                <span
-                                    className="
-                                        bg-mustard
-                                        text-espresso
-                                        text-xs
-                                        px-3
-                                        py-1
-                                        rounded-full
-                                        flex
-                                        items-center
-                                        gap-1
-                                        shadow
-                                        font-bold
-                                    "
-                                >
-                                    <Crown
-                                        className="w-3.5 h-3.5"
-                                        fill="#553e2b"
-                                    />
-                                    Bestseller
-                                </span>
-                            )}
+                            <div className="grid grid-cols-2 gap-2.5 pt-1">
 
-                        </div>
-
-                        <p
-                            className={`
-                                ${zain.className}
-                                text-lg
-                                md:text-xl
-                                text-espresso/80
-                            `}
-                        >
-                            {selectedBox.description}
-                        </p>
-
-                        {/* =========================
-                            محتويات البوكس
-                        ========================= */}
-
-                        <div className="grid grid-cols-2 gap-2.5 pt-1">
-
-                            {boxContentsList.map((item, index) => (
-                                <div
-                                    key={`${selectedBox.id}-content-${index}`}
-                                    className="
-                                        flex
-                                        items-center
-                                        gap-2
-                                        bg-[#edd0b9]/40
-                                        px-3.5
-                                        py-2
-                                        rounded-xl
-                                        border
-                                        border-espresso/5
-                                    "
-                                >
-                                    <Utensils className="w-4 h-4 text-mustard shrink-0" />
-
-                                    <span
-                                        className={`
-                                            ${zain.className}
-                                            text-lg
-                                            font-bold
-                                            text-espresso
-                                        `}
+                                {boxContentsList.map((item, index) => (
+                                    <div
+                                        key={`${selectedBox.id}-content-${index}`}
+                                        className="
+                                            flex
+                                            items-center
+                                            gap-2
+                                            bg-[#edd0b9]/40
+                                            px-3.5
+                                            py-2
+                                            rounded-xl
+                                            border
+                                            border-espresso/5
+                                        "
                                     >
-                                        {item}
-                                    </span>
-                                </div>
-                            ))}
+                                        <Utensils className="w-4 h-4 text-mustard shrink-0" />
 
-                        </div>
-                    </div>
+                                        <span
+                                            className={`
+                                                ${zain.className}
+                                                text-lg
+                                                font-bold
+                                                text-espresso
+                                            `}
+                                        >
+                                            {item}
+                                        </span>
+                                    </div>
+                                ))}
+
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
 
                     {/* =====================================================
                         التقسيمة
@@ -482,6 +588,8 @@ export default function MenuSection() {
                                     items-center
                                     justify-center
                                     font-bold
+                                    transition-colors
+                                    duration-200
                                 "
                             >
                                 <Plus className="w-4 h-4 text-espresso" />
@@ -510,6 +618,8 @@ export default function MenuSection() {
                                     items-center
                                     justify-center
                                     font-bold
+                                    transition-colors
+                                    duration-200
                                 "
                             >
                                 <Minus className="w-4 h-4 text-espresso" />
@@ -539,6 +649,7 @@ export default function MenuSection() {
                                 flex-1
                                 max-w-md
                                 transition-all
+                                duration-200
                             `}
                         >
                             <ShoppingBag className="w-5 h-5" />
@@ -567,290 +678,94 @@ export default function MenuSection() {
                         relative
                     "
                 >
+                    <Image
+                        src="/products/smoke.png"
+                        alt=""
+                        fill
+                        sizes="700px"
+                        className="object-contain opacity-60"
+                    />
 
-                    <div
-                        className="
-                            relative
-                            w-full
-                            max-w-[360px]
-                            h-[500px]
-                            flex items-center justify-center
-                        "
-                    >
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={`${selectedBox.id}-stack`}
+                            initial={{ opacity: 0, scale: 0.96 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.96 }}
+                            transition={{ duration: 0.32, ease: 'easeInOut' }}
+                            className="
+                                relative
+                                w-full
+                                max-w-[360px]
+                                flex flex-col
+                                items-center
+                                justify-center
+                                py-6
+                            "
+                        >
 
-                        {/* ================================================= */}
-                        {/* Top Bun */}
-                        {/* ================================================= */}
+                            {/* ================================================= */}
+                            {/* Smoke background */}
+                            {/* ================================================= */}
 
-                        {selectedBox.images.topBun?.image && (
                             <div
                                 className="
                                     absolute
-                                    top-[5px]
-                                    left-1/2
-                                    -translate-x-1/2
-                                    w-[210px]
-                                    h-[85px]
-                                    z-50
+                                    inset-0
+                                    flex
+                                    items-center
+                                    justify-center
+                                    pointer-events-none
                                 "
+                                style={{ zIndex: 0 }}
                             >
-                                <Image
-                                    src={selectedBox.images.topBun.image}
-                                    alt="قطع خبز بريوش"
-                                    fill
-                                    priority
-                                    sizes="210px"
-                                    className="object-contain"
-                                />
+                                {/* <div
+                                    className="relative w-[280px] h-[280px]"
+                                    style={{ transform: `scale(${SMOKE_SCALE[variant]})` }}
+                                >
+                                    <Image
+                                        src="/products/smoke.png"
+                                        alt=""
+                                        fill
+                                        sizes="400px"
+                                        className="object-contain opacity-60"
+                                    />
+                                </div> */}
                             </div>
-                        )}
 
+                            {/* ================================================= */}
+                            {/* Burger stack (dynamic, gapless) */}
+                            {/* ================================================= */}
 
-                        {/* ================================================= */}
-                        {/* Pickles */}
-                        {/* ================================================= */}
-
-                        {selectedBox.images.pickles?.image && (
                             <div
-                                className="
-                                    absolute
-                                    top-[100px]
-                                    left-1/2
-                                    -translate-x-1/2
-                                    w-[170px]
-                                    h-[55px]
-                                    z-40
-                                "
+                                className="relative flex flex-col items-center"
+                                style={{ zIndex: 1 }}
                             >
-                                <Image
-                                    src={selectedBox.images.pickles.image}
-                                    alt="خيار مخلل"
-                                    fill
-                                    sizes="170px"
-                                    className="object-contain"
-                                />
+                                {stack.map((layer, index) => (
+                                    <div
+                                        key={layer.key}
+                                        className="relative"
+                                        style={{
+                                            width: layer.width,
+                                            height: layer.height,
+                                            marginTop: layer.marginTop,
+                                            zIndex: stack.length - index,
+                                        }}
+                                    >
+                                        <Image
+                                            src={layer.src}
+                                            alt={layer.alt}
+                                            fill
+                                            priority={index < 2}
+                                            sizes={`${layer.width}px`}
+                                            className="object-contain"
+                                        />
+                                    </div>
+                                ))}
                             </div>
-                        )}
 
-
-                        {/* ================================================= */}
-                        {/* Halapino */}
-                        {/* ================================================= */}
-
-                        {selectedBox.images.Halapino?.image && (
-                            <div
-                                className="
-                                    absolute
-                                    top-[145px]
-                                    left-1/2
-                                    -translate-x-1/2
-                                    w-[180px]
-                                    h-[55px]
-                                    z-35
-                                "
-                            >
-                                <Image
-                                    src={selectedBox.images.Halapino.image}
-                                    alt="هالبينو"
-                                    fill
-                                    sizes="180px"
-                                    className="object-contain"
-                                />
-                            </div>
-                        )}
-
-
-                        {/* ================================================= */}
-                        {/* Cheddar */}
-                        {/* ================================================= */}
-
-                        {selectedBox.images.cheddar?.image && (
-                            <div
-                                className="
-                                    absolute
-                                    top-[190px]
-                                    left-1/2
-                                    -translate-x-1/2
-                                    w-[190px]
-                                    h-[45px]
-                                    z-30
-                                "
-                            >
-                                <Image
-                                    src={selectedBox.images.cheddar.image}
-                                    alt="صوص شيدر"
-                                    fill
-                                    sizes="190px"
-                                    className="object-contain"
-                                />
-                            </div>
-                        )}
-
-
-                        {/* ================================================= */}
-                        {/* Burger 1 */}
-                        {/* ================================================= */}
-
-                        {selectedBox.images.burger1?.image && (
-                            <div
-                                className="
-                                    absolute
-                                    top-[225px]
-                                    left-1/2
-                                    -translate-x-1/2
-                                    w-[180px]
-                                    h-[55px]
-                                    z-25
-                                "
-                            >
-                                <Image
-                                    src={selectedBox.images.burger1.image}
-                                    alt={selectedBox.images.burger1.alt}
-                                    fill
-                                    priority
-                                    sizes="180px"
-                                    className="object-contain"
-                                />
-                            </div>
-                        )}
-
-                        {/* ================================================= */}
-                        {/* Burger 2 */}
-                        {/* ================================================= */}
-
-                        {selectedBox.images.burger2?.image && (
-                            <div
-                                className="
-                                    absolute
-                                    top-[275px]
-                                    left-1/2
-                                    -translate-x-1/2
-                                    w-[180px]
-                                    h-[55px]
-                                    z-20
-                                "
-                            >
-                                <Image
-                                    src={selectedBox.images.burger2.image}
-                                    alt={selectedBox.images.burger2.alt}
-                                    fill
-                                    sizes="180px"
-                                    className="object-contain"
-                                />
-                            </div>
-                        )}
-
-
-                        {/* ================================================= */}
-                        {/* Sauce */}
-                        {/* ================================================= */}
-
-                        {selectedBox.images.boxSauce?.image && (
-                            <div
-                                className="
-                                    absolute
-                                    top-[320px]
-                                    left-1/2
-                                    -translate-x-1/2
-                                    w-[155px]
-                                    h-[45px]
-                                    z-15
-                                "
-                            >
-                                <Image
-                                    src={selectedBox.images.boxSauce.image}
-                                    alt={selectedBox.images.boxSauce.alt}
-                                    fill
-                                    sizes="155px"
-                                    className="object-contain"
-                                />
-                            </div>
-                        )}
-
-
-                        {/* ================================================= */}
-                        {/* Burger 3 */}
-                        {/* ================================================= */}
-
-                        {selectedBox.images.burger3?.image && (
-                            <div
-                                className="
-                                    absolute
-                                    top-[355px]
-                                    left-1/2
-                                    -translate-x-1/2
-                                    w-[180px]
-                                    h-[55px]
-                                    z-10
-                                "
-                            >
-                                <Image
-                                    src={selectedBox.images.burger3.image}
-                                    alt={selectedBox.images.burger3.alt}
-                                    fill
-                                    sizes="180px"
-                                    className="object-contain"
-                                />
-                            </div>
-                        )}
-
-
-                        {/* ================================================= */}
-                        {/* Burger 4 */}
-                        {/* ================================================= */}
-
-                        {selectedBox.images.burger4?.image && (
-                            <div
-                                className="
-                                    absolute
-                                    top-[395px]
-                                    left-1/2
-                                    -translate-x-1/2
-                                    w-[180px]
-                                    h-[55px]
-                                    z-5
-                                "
-                            >
-                                <Image
-                                    src={selectedBox.images.burger4.image}
-                                    alt={selectedBox.images.burger4.alt}
-                                    fill
-                                    sizes="180px"
-                                    className="object-contain"
-                                />
-                            </div>
-                        )}
-
-
-                        {/* ================================================= */}
-                        {/* Bottom Bun */}
-                        {/* ================================================= */}
-
-                        {selectedBox.images.bottomBun?.image && (
-                            <div
-                                className="
-                                    absolute
-                                    bottom-[0px]
-                                    left-1/2
-                                    -translate-x-1/2
-                                    w-[210px]
-                                    h-[70px]
-                                    z-0
-                                "
-                            >
-                                <Image
-                                    src={selectedBox.images.bottomBun.image}
-                                    alt="قطع خبز بريوش"
-                                    fill
-                                    priority
-                                    sizes="210px"
-                                    className="object-contain"
-                                />
-                            </div>
-                        )}
-
-                    </div>
-
+                        </motion.div>
+                    </AnimatePresence>
 
                     {/* ================= الجملة تحت البرجر ================= */}
 
@@ -859,7 +774,7 @@ export default function MenuSection() {
                             text-center
                             text-espresso
                             ${zain.className}
-                            mt-6
+                            mt-4
                         `}
                     >
                         <p className="text-xl font-bold">

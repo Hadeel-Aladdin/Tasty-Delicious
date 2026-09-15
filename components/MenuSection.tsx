@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Aref_Ruqaa, Zain } from 'next/font/google';
 import {
     Flame,
     Crown,
@@ -11,7 +10,15 @@ import {
     Minus,
     ShoppingBag,
     Utensils,
+    CookingPot,
+    Sandwich,
+    Beef,
+    Drumstick,
+    Cuboid,
+    Salad,
 } from 'lucide-react';
+
+import { Aref_Ruqaa, Zain } from 'next/font/google';
 
 import { boxes } from '@/data/box';
 import type { Box, ImgDetails } from '@/types/product';
@@ -26,11 +33,9 @@ const zain = Zain({
     subsets: ['arabic'],
 });
 
+
 /* =====================================================
     Exploded-stack layer builder
-    - No fixed pixel positions -> no empty gaps.
-    - Each layer only takes space in the stack if its
-      image actually exists for the selected box.
 ===================================================== */
 
 type StackLayer = {
@@ -39,14 +44,14 @@ type StackLayer = {
     alt: string;
     width: number;
     height: number;
-    marginTop: number; // negative = overlap with the layer above it
+    marginTop: number;
 };
 
 const SIZE = {
     bun: { width: 210, height: 85 },
     bottomBun: { width: 210, height: 70 },
-    sauce: { width: 155, height: 45 },     // ketchup / mayo / box sauces
-    wide: { width: 170, height: 55 },      // pickles / halapino
+    sauce: { width: 155, height: 45 },
+    wide: { width: 170, height: 55 },
     cheese: { width: 190, height: 45 },
     patty: { width: 180, height: 55 },
 };
@@ -56,6 +61,7 @@ const RANCH_SAUCE: ImgDetails = {
     image: '/products/ranch-sauce.png',
     alt: 'صوص رانش',
 };
+
 
 function buildStack(box: Box): StackLayer[] {
     const layers: StackLayer[] = [];
@@ -67,6 +73,7 @@ function buildStack(box: Box): StackLayer[] {
         overlap: number
     ) => {
         if (!img?.image) return;
+
         layers.push({
             key,
             src: img.image,
@@ -87,19 +94,77 @@ function buildStack(box: Box): StackLayer[] {
     push('burger1', box.images.burger1, SIZE.patty, 20);
 
     if (isTD) {
-        // ترتيب خاص لـ T&D Box: صوص بين كل طبقتين لحمة/فراخ مختلفين
-        push('taxas-sauce', box.images.boxSauce, SIZE.sauce, 15); // بين burger1 و burger2
-        push('burger2', box.images.burger2, SIZE.patty, 20);
-        push('cheddar-sauce', box.images.cheddar, SIZE.sauce, 15); // بين burger2 و burger3
-        push('burger3', box.images.burger3, SIZE.patty, 20);
-        push('ranch-sauce', RANCH_SAUCE, SIZE.sauce, 15);          // بين burger3 و burger4
-        push('burger4', box.images.burger4, SIZE.patty, 20);
+        // ترتيب خاص لـ T&D Box
+        push(
+            'taxas-sauce',
+            box.images.boxSauce,
+            SIZE.sauce,
+            15
+        );
+
+        push(
+            'burger2',
+            box.images.burger2,
+            SIZE.patty,
+            20
+        );
+
+        push(
+            'cheddar-sauce',
+            box.images.cheddar,
+            SIZE.sauce,
+            15
+        );
+
+        push(
+            'burger3',
+            box.images.burger3,
+            SIZE.patty,
+            20
+        );
+
+        push(
+            'ranch-sauce',
+            RANCH_SAUCE,
+            SIZE.sauce,
+            15
+        );
+
+        push(
+            'burger4',
+            box.images.burger4,
+            SIZE.patty,
+            20
+        );
     } else {
-        push('box-sauce', box.images.boxSauce, SIZE.sauce, 15);
-        push('burger3', box.images.burger3, SIZE.patty, 20);
-        // احتياطي لو أي بوكس مستقبلي فيه burger2/burger4 من غير ما يكون T&D
-        push('burger2', box.images.burger2, SIZE.patty, 20);
-        push('burger4', box.images.burger4, SIZE.patty, 20);
+        push(
+            'box-sauce',
+            box.images.boxSauce,
+            SIZE.sauce,
+            15
+        );
+
+        push(
+            'burger3',
+            box.images.burger3,
+            SIZE.patty,
+            20
+        );
+
+        // احتياطي لأي بوكس مستقبلي
+        push(
+            'burger2',
+            box.images.burger2,
+            SIZE.patty,
+            20
+        );
+
+        push(
+            'burger4',
+            box.images.burger4,
+            SIZE.patty,
+            20
+        );
     }
 
     push('mayo', box.images.Mayo, SIZE.sauce, 15);
@@ -108,20 +173,31 @@ function buildStack(box: Box): StackLayer[] {
     return layers;
 }
 
+
 /* =====================================================
-    تصنيف البوكسات حسب عدد اللحمات/النكهات الظاهرة
-    (بيتحدد بيها حجم دخان الخلفية بس - الطول بقى تلقائي)
+    Stack variants
 ===================================================== */
 
 type StackVariant = 'single' | 'double' | 'quad';
 
 function getStackVariant(box: Box): StackVariant {
-    const singleIds = ['classic-box', 'volcano-box', 'grill-cordon-box', 'fried-cordon-box'];
-    const doubleIds = ['matching-box', 'cordon-mix-box', 'bbq-box'];
+    const singleIds = [
+        'classic-box',
+        'volcano-box',
+        'grill-cordon-box',
+        'fried-cordon-box',
+    ];
+
+    const doubleIds = [
+        'matching-box',
+        'cordon-mix-box',
+        'bbq-box',
+    ];
 
     if (box.id === 'T&D box') return 'quad';
     if (doubleIds.includes(box.id)) return 'double';
     if (singleIds.includes(box.id)) return 'single';
+
     return 'single';
 }
 
@@ -131,12 +207,99 @@ const SMOKE_SCALE: Record<StackVariant, number> = {
     quad: 1.35,
 };
 
-export default function MenuSection() {
 
-    // Default displayed box and quantity
+/* =====================================================
+    Ingredient icons
+===================================================== */
+
+function getIngredientIcon(item: string) {
+    const value = item.toLowerCase();
+
+    // Sauces
+    if (
+        value.includes('صوص') ||
+        value.includes('مايونيز') ||
+        value.includes('كاتشب')
+    ) {
+        return CookingPot;
+    }
+
+    // Bun
+    if (
+        value.includes('خبز') ||
+        value.includes('بريوش') ||
+        value.includes('عيش')
+    ) {
+        return Sandwich;
+    }
+
+    // Chicken
+    // Chicken / Cordon
+    if (
+        value.includes('فراخ') ||
+        value.includes('دجاج') ||
+        value.includes('تشيكن') ||
+        value.includes('كوردن') ||
+        value.includes('cordon')
+    ) {
+        return Drumstick;
+    }
+
+    // Beef
+    if (
+        value.includes('لحم') ||
+        value.includes('برجر')
+    ) {
+        return Beef;
+    }
+
+
+    // Cheese
+    if (
+        value.includes('جبنة') ||
+        value.includes('جبن') ||
+        value.includes('شيدر')
+    ) {
+        return Cuboid;
+    }
+
+    // Pickles
+    if (
+        value.includes('مخلل') ||
+        value.includes('خيار')
+    ) {
+        return Salad;
+    }
+
+    // Jalapeno / spicy
+    if (
+        value.includes('هالوبينو') ||
+        value.includes('هالبينو') ||
+        value.includes('حار')
+    ) {
+        return Flame;
+    }
+
+    return Utensils;
+}
+
+
+/* =====================================================
+    Menu Section
+===================================================== */
+
+export default function MenuSection() {
 
     const [selectedBox, setSelectedBox] = useState<Box>(boxes[0]);
     const [quantity, setQuantity] = useState<number>(1);
+
+    // ملاحظات العميل
+    const [orderNotes, setOrderNotes] = useState('');
+
+
+    /* =====================================================
+        Quantity
+    ===================================================== */
 
     const handleQuantity = (type: 'inc' | 'dec') => {
         if (type === 'dec' && quantity > 1) {
@@ -149,13 +312,16 @@ export default function MenuSection() {
     };
 
 
-    // Box categorization (selector groups)
+    /* =====================================================
+        Box categorization
+    ===================================================== */
 
     const beefBoxes = [
         boxes.find((box) => box.id === 'classic-box'),
-        boxes.find((box) => box.id === 'matching-box'),
         boxes.find((box) => box.id === 'volcano-box'),
+        boxes.find((box) => box.id === 'matching-box'),
     ].filter((box): box is Box => Boolean(box));
+
 
     const chickenBoxes = [
         boxes.find((box) => box.id === 'grill-cordon-box'),
@@ -163,55 +329,78 @@ export default function MenuSection() {
         boxes.find((box) => box.id === 'cordon-mix-box'),
     ].filter((box): box is Box => Boolean(box));
 
+
     const mixBoxes = [
         boxes.find((box) => box.id === 'bbq-box'),
         boxes.find((box) => box.id === 'T&D box'),
     ].filter((box): box is Box => Boolean(box));
 
 
-    // Extracting content of the current selected box
+    /* =====================================================
+        Current box contents
+    ===================================================== */
 
-    const boxContentsList = Object.values(selectedBox.contents).filter(
+    const boxContentsList = Object.values(
+        selectedBox.contents
+    ).filter(
         (val): val is string => Boolean(val)
     );
 
 
-    // Order now message
+    /* =====================================================
+        WhatsApp order message
+    ===================================================== */
 
     const whatsappText = encodeURIComponent(
-        `أهلاً، عايز أطلب أوردر:\n- ${selectedBox.name} (عدد: ${quantity})`
+        `أهلاً، عايز أطلب أوردر:
+
+- ${selectedBox.name}
+- العدد: ${quantity}
+- الإجمالي: ${selectedBox.price * quantity} ج.م
+- ملاحظات: ${orderNotes.trim() || 'لا توجد ملاحظات'}`
     );
 
-    // On click function that sets the actual selected box
+
+    /* =====================================================
+        Select box
+    ===================================================== */
 
     const selectBox = (box: Box) => {
         setSelectedBox(box);
         setQuantity(1);
+        setOrderNotes('');
     };
 
-    // Stack + variant for the currently selected box
+
+    /* =====================================================
+        Stack
+    ===================================================== */
 
     const stack = buildStack(selectedBox);
     const variant = getStackVariant(selectedBox);
 
-    // Main function that changes the info displayed on the UI according to the selected box
+
+    /* =====================================================
+        Box Selector
+    ===================================================== */
 
     const BoxSelector = ({ box }: { box: Box }) => {
         const isSelected = selectedBox.id === box.id;
         const isVolcano = box.id === 'volcano-box';
         const isSpecial = box.id === 'T&D box';
 
-        // تنظيف الاسم من كلمة Box أو بوكس
-        const displayName = box.name.replace(/box|بوكس/gi, '').trim();
+        const displayName = box.name
+            .replace(/box|بوكس/gi, '')
+            .trim();
 
-        // تحديد لون النص بنفس لون البوردر
         const textColorClass = isVolcano
-            ? 'text-volcano'
+            ? 'text-espresso'
             : isSpecial && isSelected
                 ? 'text-cream'
                 : isSelected || isSpecial
                     ? 'text-mustard'
                     : 'text-espresso';
+
 
         return (
             <button
@@ -219,27 +408,30 @@ export default function MenuSection() {
                 onClick={() => selectBox(box)}
                 title={box.name}
                 className={`
-                relative
-                w-11 h-11
-                md:w-[54px] md:h-[54px]
-                rounded-full
-                border-2
-                transition-all
-                duration-200
-                shrink-0
-                flex items-center justify-center
-                p-0.5 text-center
-                ${aref.className}
+                    relative
+                    w-11 h-11
+                    md:w-[54px] md:h-[54px]
+                    rounded-full
+                    border-2
+                    transition-all
+                    duration-200
+                    shrink-0
+                    flex
+                    items-center
+                    justify-center
+                    p-0.5
+                    text-center
+                    ${aref.className}
 
-                ${isSelected
+                    ${isSelected
                         ? 'scale-110 shadow-md ring-2 ring-espresso/20'
                         : 'hover:scale-105'
                     }
 
-                ${isVolcano
+                    ${isVolcano
                         ? isSelected
-                            ? 'border-volcano bg-volcano/10'
-                            : 'border-volcano/50 bg-volcano/20'
+                            ? 'border-mustard bg-cream'
+                            : 'border-mustard/40 bg-cream/20'
                         : isSpecial
                             ? isSelected
                                 ? 'border-mustard bg-mustard'
@@ -248,34 +440,40 @@ export default function MenuSection() {
                                 ? 'border-mustard bg-cream'
                                 : 'border-mustard/40 bg-cream/20'
                     }
-            `}
+                `}
             >
-                {/* نص متجاوب: خط أصغر بدون truncate ليناسب حجم الدائرة */}
+
                 <span
                     className={`
-                    w-full 
-                    ${textColorClass} 
-                    font-bold 
-                    text-[9px] md:text-[10px] 
-                    leading-[1.1] 
-                    break-words 
-                    hyphens-auto
-                `}
+                        w-full
+                        ${textColorClass}
+                        font-bold
+                        text-[9px]
+                        md:text-[10px]
+                        leading-[1.1]
+                        break-words
+                        hyphens-auto
+                    `}
                 >
                     {displayName}
                 </span>
 
-                {/* Flame للـ Volcano */}
+
+                {/* Volcano */}
                 {isVolcano && (
-                    <div className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-volcano flex items-center justify-center shadow-sm z-10">
-                        <Flame
-                            className="w-2.5 h-2.5 text-white"
-                            fill="white"
+                    <div className="absolute -top-3 -left-1 w-6 h-7 rounded-xl flex items-center justify-center z-10">
+                        <Image
+                            src="/cheese.png"
+                            alt="Melted cheese"
+                            fill
+                            sizes="25px"
+                            className="object-contain"
                         />
                     </div>
                 )}
 
-                {/* Crown للـ Special Taste */}
+
+                {/* T&D */}
                 {isSpecial && (
                     <div className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-mustard flex items-center justify-center shadow-sm z-10">
                         <Crown
@@ -284,507 +482,801 @@ export default function MenuSection() {
                         />
                     </div>
                 )}
+
             </button>
         );
     };
 
+
     return (
-        <div
-            id="menu"
-            dir="rtl"
-            className="
-                bg-cream/30
-                w-full
-                h-screen
-                mt-20
-                flex
-                items-center
-                justify-center
-                px-4
-                md:px-10
-                py-6
-                overflow-y-auto
-            "
-        >
-            <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <>
 
-                {/* =====================================================
-                    الجانب الأيمن
-                ===================================================== */}
+            {/* =====================================================
+                Menu Intro
+            ===================================================== */}
 
-                <div className="lg:col-span-7 flex flex-col justify-between h-full space-y-6">
+            <div
+                id="menu"
+                dir='rtl'
+                className="
+                    bg-cream
+                    w-full
+                    px-5
+                    pt-30
+                    pb-8
+                    text-center
+                "
+            >
+                <div className="max-w-3xl mx-auto">
 
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={`${selectedBox.id}-info`}
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -12 }}
-                            transition={{ duration: 0.28, ease: 'easeInOut' }}
-                            className="space-y-3"
-                        >
+                    <h2
+                        className={`
+                            ${aref.className}
+                            text-4xl
+                            md:text-5xl
+                            font-bold
+                            text-espresso
+                            mb-8
+                        `}
+                    >
+                        المينيو والبوكسات
+                    </h2>
 
-                            <div className="flex items-center gap-3 flex-wrap">
-
-                                <h2
-                                    className={`
-                                        ${aref.className}
-                                        text-4xl
-                                        md:text-5xl
-                                        text-espresso
-                                        font-bold
-                                    `}
-                                >
-                                    {selectedBox.name}
-                                </h2>
-
-                                {/* Volcano */}
-                                {selectedBox.id === 'volcano-box' && (
-                                    <span
-                                        className="
-                                            bg-volcano
-                                            text-white
-                                            text-xs
-                                            px-3
-                                            py-1
-                                            rounded-full
-                                            flex
-                                            items-center
-                                            gap-1
-                                            shadow
-                                        "
-                                    >
-                                        <Flame
-                                            className="w-3.5 h-3.5"
-                                            fill="white"
-                                        />
-                                        سبايسي
-                                    </span>
-                                )}
-
-                                {/* T&D / Special Taste */}
-                                {selectedBox.id === 'T&D box' && (
-                                    <span
-                                        className="
-                                            bg-mustard
-                                            text-espresso
-                                            text-xs
-                                            px-3
-                                            py-1
-                                            rounded-full
-                                            flex
-                                            items-center
-                                            gap-1
-                                            shadow
-                                            font-bold
-                                        "
-                                    >
-                                        <Crown
-                                            className="w-3.5 h-3.5"
-                                            fill="#553e2b"
-                                        />
-                                        Bestseller
-                                    </span>
-                                )}
-
-                            </div>
-
-                            <p
-                                className={`
-                                    ${zain.className}
-                                    text-lg
-                                    md:text-xl
-                                    text-espresso/80
-                                `}
-                            >
-                                {selectedBox.description}
-                            </p>
-
-                            {/* =========================
-                                محتويات البوكس
-                            ========================= */}
-
-                            <div className="grid grid-cols-2 gap-2.5 pt-1">
-
-                                {boxContentsList.map((item, index) => (
-                                    <div
-                                        key={`${selectedBox.id}-content-${index}`}
-                                        className="
-                                            flex
-                                            items-center
-                                            gap-2
-                                            bg-[#edd0b9]/40
-                                            px-3.5
-                                            py-2
-                                            rounded-xl
-                                            border
-                                            border-espresso/5
-                                        "
-                                    >
-                                        <Utensils className="w-4 h-4 text-mustard shrink-0" />
-
-                                        <span
-                                            className={`
-                                                ${zain.className}
-                                                text-lg
-                                                font-bold
-                                                text-espresso
-                                            `}
-                                        >
-                                            {item}
-                                        </span>
-                                    </div>
-                                ))}
-
-                            </div>
-                        </motion.div>
-                    </AnimatePresence>
-
-                    {/* =====================================================
-                        التقسيمة
-                    ===================================================== */}
-
-                    <div className="flex items-center gap-3 flex-wrap">
-
-                        {/* =========================
-                            Beef
-                        ========================= */}
-
-                        <div
-                            className="
-                                flex
-                                items-center
-                                gap-2
-                                bg-[#edd0b9]/20
-                                p-2
-                                rounded-2xl
-                                border
-                                border-espresso/5
-                            "
-                        >
-                            <div className="w-7 h-7 relative shrink-0">
-                                <Image
-                                    src="/beef-icon-2.png"
-                                    alt="Beef"
-                                    fill
-                                    sizes="28px"
-                                    className="object-contain"
-                                />
-                            </div>
-
-                            <div className="flex gap-2">
-                                {beefBoxes.map((box) => (
-                                    <BoxSelector
-                                        key={box.id}
-                                        box={box}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* =========================
-                            Chicken
-                        ========================= */}
-
-                        <div
-                            className="
-                                flex
-                                items-center
-                                gap-2
-                                bg-[#edd0b9]/20
-                                p-2
-                                rounded-2xl
-                                border
-                                border-espresso/5
-                            "
-                        >
-                            <div className="w-7 h-7 relative shrink-0">
-                                <Image
-                                    src="/chicken-icon.png"
-                                    alt="Chicken"
-                                    fill
-                                    sizes="28px"
-                                    className="object-contain"
-                                />
-                            </div>
-
-                            <div className="flex gap-2">
-                                {chickenBoxes.map((box) => (
-                                    <BoxSelector
-                                        key={box.id}
-                                        box={box}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* =========================
-                            Mix
-                        ========================= */}
-
-                        <div
-                            className="
-                                flex
-                                items-center
-                                gap-2
-                                bg-[#edd0b9]/20
-                                p-2
-                                rounded-2xl
-                                border
-                                border-espresso/5
-                            "
-                        >
-                            <div className="w-7 h-7 relative shrink-0">
-                                <Image
-                                    src="/mix.png"
-                                    alt="mix"
-                                    fill
-                                    sizes="80px"
-                                    className="object-contain"
-                                />
-                            </div>
-
-                            <div className="flex gap-2">
-                                {mixBoxes.map((box) => (
-                                    <BoxSelector
-                                        key={box.id}
-                                        box={box}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-
-                    </div>
-
-                    {/* =====================================================
-                        الكمية + الطلب
-                    ===================================================== */}
-
-                    <div className="flex items-center gap-4 pt-2">
-
-                        {/* Quantity */}
-                        <div
-                            className="
-                                flex
-                                items-center
-                                bg-mustard
-                                text-espresso
-                                rounded-full
-                                p-1
-                                shadow-inner
-                                border
-                                border-espresso/10
-                            "
-                        >
-                            <button
-                                onClick={() => handleQuantity('inc')}
-                                className="
-                                    w-10
-                                    h-10
-                                    rounded-full
-                                    bg-white/60
-                                    hover:bg-white
-                                    flex
-                                    items-center
-                                    justify-center
-                                    font-bold
-                                    transition-colors
-                                    duration-200
-                                "
-                            >
-                                <Plus className="w-4 h-4 text-espresso" />
-                            </button>
-
-                            <span
-                                className={`
-                                    ${zain.className}
-                                    text-2xl
-                                    font-black
-                                    px-4
-                                `}
-                            >
-                                {quantity}
-                            </span>
-
-                            <button
-                                onClick={() => handleQuantity('dec')}
-                                className="
-                                    w-10
-                                    h-10
-                                    rounded-full
-                                    bg-white/60
-                                    hover:bg-white
-                                    flex
-                                    items-center
-                                    justify-center
-                                    font-bold
-                                    transition-colors
-                                    duration-200
-                                "
-                            >
-                                <Minus className="w-4 h-4 text-espresso" />
-                            </button>
-                        </div>
-
-                        {/* WhatsApp */}
-                        <a
-                            href={`https://wa.me/20112233?text=${whatsappText}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`
-                                flex
-                                items-center
-                                justify-center
-                                gap-2
-                                bg-mustard
-                                hover:bg-[#d99f3b]
-                                text-espresso
-                                px-8
-                                py-3
-                                rounded-full
-                                font-bold
-                                shadow-md
-                                ${zain.className}
-                                text-xl
-                                flex-1
-                                max-w-md
-                                transition-all
-                                duration-200
-                            `}
-                        >
-                            <ShoppingBag className="w-5 h-5" />
-
-                            <span>اطلب الآن</span>
-
-                            <span className="text-base opacity-85">
-                                ({selectedBox.price * quantity} ج.م)
-                            </span>
-                        </a>
-
-                    </div>
-
-                </div>
-
-                {/* =====================================================
-                    الجانب الأيسر - Exploded View
-                ===================================================== */}
-
-                <div
-                    className="
-                        lg:col-span-5
-                        flex flex-col
-                        items-center
-                        justify-center
-                        relative
-                    "
-                >
-                    <Image
-                        src="/products/smoke.png"
-                        alt=""
-                        fill
-                        sizes="700px"
-                        className="object-contain opacity-60"
-                    />
-
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={`${selectedBox.id}-stack`}
-                            initial={{ opacity: 0, scale: 0.96 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.96 }}
-                            transition={{ duration: 0.32, ease: 'easeInOut' }}
-                            className="
-                                relative
-                                w-full
-                                max-w-[360px]
-                                flex flex-col
-                                items-center
-                                justify-center
-                                py-6
-                            "
-                        >
-
-                            {/* ================================================= */}
-                            {/* Smoke background */}
-                            {/* ================================================= */}
-
-                            <div
-                                className="
-                                    absolute
-                                    inset-0
-                                    flex
-                                    items-center
-                                    justify-center
-                                    pointer-events-none
-                                "
-                                style={{ zIndex: 0 }}
-                            >
-                                {/* <div
-                                    className="relative w-[280px] h-[280px]"
-                                    style={{ transform: `scale(${SMOKE_SCALE[variant]})` }}
-                                >
-                                    <Image
-                                        src="/products/smoke.png"
-                                        alt=""
-                                        fill
-                                        sizes="400px"
-                                        className="object-contain opacity-60"
-                                    />
-                                </div> */}
-                            </div>
-
-                            {/* ================================================= */}
-                            {/* Burger stack (dynamic, gapless) */}
-                            {/* ================================================= */}
-
-                            <div
-                                className="relative flex flex-col items-center"
-                                style={{ zIndex: 1 }}
-                            >
-                                {stack.map((layer, index) => (
-                                    <div
-                                        key={layer.key}
-                                        className="relative"
-                                        style={{
-                                            width: layer.width,
-                                            height: layer.height,
-                                            marginTop: layer.marginTop,
-                                            zIndex: stack.length - index,
-                                        }}
-                                    >
-                                        <Image
-                                            src={layer.src}
-                                            alt={layer.alt}
-                                            fill
-                                            priority={index < 2}
-                                            sizes={`${layer.width}px`}
-                                            className="object-contain"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-
-                        </motion.div>
-                    </AnimatePresence>
-
-                    {/* ================= الجملة تحت البرجر ================= */}
 
                     <div
                         className={`
-                            text-center
-                            text-espresso
                             ${zain.className}
-                            mt-4
+                            text-base
+                            md:text-lg
+                            leading-8
+                            text-espresso/75
                         `}
                     >
-                        <p className="text-xl font-bold">
-                            بمكونات طازجة وجودة عالية
+                        <p>
+                            كل بوكس فيه المكونات والصوصات اللي محتاجها
+                            عشان تعمل برجر على مزاجك،
+                            وكل اللي ناقصه هو التسوية بالطريقة اللي تحبها.
                         </p>
+
+                        <p>
+                            ومكوناتك بتوصلك طازة ومحافظة على حرارتها،
+                            لأن كل بوكس بيجيلك جوّه
+                            <span className="font-bold text-espresso">
+                                {' '}Cooling Bag
+                            </span>
+                            مخصوص يحافظ عليها لحد ما توصل لك.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+
+            {/* =====================================================
+                Main Menu
+            ===================================================== */}
+
+            <div
+                id="menuBoxes"
+                dir="rtl"
+                className="
+                    bg-cream
+                    overflow-x-hidden
+                    scroll-mt-20
+                    w-full min-h-[100dvh]
+                    min-h-screen
+                    lg:h-screen
+                    px-4
+                    md:px-10
+                    py-6
+                    lg:py-8
+                "
+            >
+
+                <div
+                    className="
+                        max-w-7xl
+                        w-full
+                        mx-auto
+                        grid
+                        grid-cols-1
+                        lg:grid-cols-12
+                        gap-8
+                        lg:gap-10
+                        items-center
+                    "
+                >
+
+
+                    {/* =====================================================
+                        Exploded View
+
+                        Mobile: FIRST
+                        Desktop: LEFT
+                    ===================================================== */}
+
+                    <div
+                        className="
+                            order-1
+                            lg:order-2
+                            lg:col-span-5
+                            flex
+                            flex-col
+                            items-center
+                            justify-center
+                            relative
+                            w-full
+                        "
+                    >
+
+                        <AnimatePresence mode="wait">
+
+                            <motion.div
+                                key={`${selectedBox.id}-stack`}
+                                initial={{
+                                    opacity: 0,
+                                    scale: 0.96,
+                                }}
+                                animate={{
+                                    opacity: 1,
+                                    scale: 1,
+                                }}
+                                exit={{
+                                    opacity: 0,
+                                    scale: 0.96,
+                                }}
+                                transition={{
+                                    duration: 0.32,
+                                    ease: 'easeInOut',
+                                }}
+                                className="
+                                    relative
+                                    w-full
+                                    max-w-[360px]
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    py-4
+                                    md:py-6
+                                "
+                            >
+
+                                {/* Smoke background */}
+
+                                <div
+                                    className="
+                                        absolute
+                                        inset-0
+                                        flex
+                                        items-center
+                                        justify-center
+                                        pointer-events-none
+                                    "
+                                    style={{
+                                        zIndex: 0,
+                                    }}
+                                >
+                                    <div
+                                        className="relative w-[280px] h-[280px]"
+                                        style={{
+                                            transform: `scale(${SMOKE_SCALE[variant]})`,
+                                        }}
+                                    >
+                                        <Image
+                                            src="/products/smoke.png"
+                                            alt=""
+                                            fill
+                                            sizes="400px"
+                                            className="object-contain opacity-50"
+                                        />
+                                    </div>
+                                </div>
+
+
+                                {/* Burger Stack */}
+
+                                <div
+                                    className="
+                                        relative
+                                        flex
+                                        flex-col
+                                        items-center
+                                    "
+                                    style={{
+                                        zIndex: 1,
+                                    }}
+                                >
+
+                                    {stack.map((layer, index) => (
+
+                                        <div
+                                            key={layer.key}
+                                            className="relative"
+                                            style={{
+                                                width: layer.width,
+                                                height: layer.height,
+                                                marginTop: layer.marginTop,
+                                                zIndex: stack.length - index,
+                                            }}
+                                        >
+
+                                            <Image
+                                                src={layer.src}
+                                                alt={layer.alt}
+                                                fill
+                                                priority={index < 2}
+                                                sizes={`${layer.width}px`}
+                                                className="object-contain"
+                                            />
+
+                                        </div>
+
+                                    ))}
+
+                                </div>
+
+                            </motion.div>
+
+                        </AnimatePresence>
+
+
+                        {/* Under Burger */}
+
+                        <div
+                            className={`
+                                text-center
+                                text-espresso
+                                ${zain.className}
+                                mt-1
+                                md:mt-4
+                            `}
+                        >
+                            <p className="text-lg md:text-xl font-bold">
+                                بمكونات طازجة وجودة عالية
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    {/* =====================================================
+                        Box Information
+
+                        Mobile: SECOND
+                        Desktop: RIGHT
+                    ===================================================== */}
+
+                    <div
+                        className="
+                            order-2
+                            lg:order-1
+                            lg:col-span-7
+                            flex
+                            flex-col
+                            justify-between
+                            h-auto
+                            lg:h-full
+                            space-y-6
+                            w-full
+                        "
+                    >
+
+                        <AnimatePresence mode="wait">
+
+                            <motion.div
+                                key={`${selectedBox.id}-info`}
+                                initial={{
+                                    opacity: 0,
+                                    y: 12,
+                                }}
+                                animate={{
+                                    opacity: 1,
+                                    y: 0,
+                                }}
+                                exit={{
+                                    opacity: 0,
+                                    y: -12,
+                                }}
+                                transition={{
+                                    duration: 0.28,
+                                    ease: 'easeInOut',
+                                }}
+                                className="space-y-3"
+                            >
+
+                                {/* Box Title */}
+
+                                <div className="flex items-center gap-3 flex-wrap">
+
+                                    <h2
+                                        className={`
+                                            ${aref.className}
+                                            text-3xl
+                                            sm:text-4xl
+                                            md:text-5xl
+                                            text-espresso
+                                            font-bold
+                                        `}
+                                    >
+                                        {selectedBox.name}
+                                    </h2>
+
+
+                                    {/* Volcano */}
+
+                                    {selectedBox.id === 'volcano-box' && (
+                                        <span
+                                            className="
+                                                bg-mustard/40
+                                                text-espresso
+                                                font-bold
+                                                text-xs
+                                                px-3
+                                                py-1
+                                                rounded-full
+                                                flex
+                                                items-center
+                                                gap-1
+                                                shadow
+                                            "
+                                        >
+                                            محشي جبنة
+
+                                            <span className="w-7 h-7 relative shrink-0">
+                                                <Image
+                                                    src="/cheese.png"
+                                                    alt="Cheese"
+                                                    fill
+                                                    sizes="28px"
+                                                    className="object-contain"
+                                                />
+                                            </span>
+                                        </span>
+                                    )}
+
+
+                                    {/* T&D */}
+
+                                    {selectedBox.id === 'T&D box' && (
+                                        <span
+                                            className="
+                                                bg-mustard
+                                                text-espresso
+                                                text-xs
+                                                px-3
+                                                py-1
+                                                rounded-full
+                                                flex
+                                                items-center
+                                                gap-1
+                                                shadow
+                                                font-bold
+                                            "
+                                        >
+                                            <Crown
+                                                className="w-3.5 h-3.5"
+                                                fill="#553e2b"
+                                            />
+
+                                            Bestseller
+                                        </span>
+                                    )}
+
+                                </div>
+
+
+                                {/* Description */}
+
+                                <p
+                                    className={`
+                                        ${zain.className}
+                                        text-lg
+                                        md:text-xl
+                                        text-espresso/80
+                                    `}
+                                >
+                                    {selectedBox.description}
+                                </p>
+
+
+                                {/* =====================================================
+                                    Box Contents
+                                ===================================================== */}
+
+                                <div
+                                    className="
+                                        grid
+                                        grid-cols-1
+                                        sm:grid-cols-2
+                                        gap-2.5
+                                        pt-1
+                                    "
+                                >
+
+                                    {boxContentsList.map((item, index) => {
+
+                                        const Icon = getIngredientIcon(item);
+
+                                        return (
+                                            <div
+                                                key={`${selectedBox.id}-content-${index}`}
+                                                className="
+                                                    flex
+                                                    items-center
+                                                    gap-2
+                                                    bg-[#edd0b9]/40
+                                                    px-3.5
+                                                    py-2
+                                                    rounded-xl
+                                                    border
+                                                    border-espresso/5
+                                                    min-w-0
+                                                "
+                                            >
+
+                                                <Icon
+                                                    className="
+                                                        w-4
+                                                        h-4
+                                                        text-mustard
+                                                        shrink-0
+                                                    "
+                                                    strokeWidth={2.2}
+                                                />
+
+                                                <span
+                                                    className={`
+                                                        ${zain.className}
+                                                        text-base
+                                                        md:text-lg
+                                                        font-bold
+                                                        text-espresso
+                                                        leading-tight
+                                                    `}
+                                                >
+                                                    {item}
+                                                </span>
+
+                                            </div>
+                                        );
+                                    })}
+
+                                </div>
+
+                            </motion.div>
+
+                        </AnimatePresence>
+
+
+                        {/* =====================================================
+                            Box Selectors
+                        ===================================================== */}
+
+                        <div
+                            className="
+                                flex
+                                items-center
+                                gap-3
+                                flex-wrap
+                            "
+                        >
+
+                            {/* Beef */}
+
+                            <div
+                                className="
+                                    flex
+                                    items-center
+                                    gap-2
+                                    bg-[#edd0b9]/20
+                                    p-2
+                                    rounded-2xl
+                                    border
+                                    border-espresso/5
+                                "
+                            >
+
+                                <div className="w-7 h-7 relative shrink-0">
+                                    <Image
+                                        src="/beef-icon-2.png"
+                                        alt="Beef"
+                                        fill
+                                        sizes="28px"
+                                        className="object-contain"
+                                    />
+                                </div>
+
+                                <div className="flex gap-2">
+                                    {beefBoxes.map((box) => (
+                                        <BoxSelector
+                                            key={box.id}
+                                            box={box}
+                                        />
+                                    ))}
+                                </div>
+
+                            </div>
+
+
+                            {/* Chicken */}
+
+                            <div
+                                className="
+                                    flex
+                                    items-center
+                                    gap-2
+                                    bg-[#edd0b9]/20
+                                    p-2
+                                    rounded-2xl
+                                    border
+                                    border-espresso/5
+                                "
+                            >
+
+                                <div className="w-7 h-7 relative shrink-0">
+                                    <Image
+                                        src="/chicken-icon.png"
+                                        alt="Chicken"
+                                        fill
+                                        sizes="28px"
+                                        className="object-contain"
+                                    />
+                                </div>
+
+                                <div className="flex gap-2">
+                                    {chickenBoxes.map((box) => (
+                                        <BoxSelector
+                                            key={box.id}
+                                            box={box}
+                                        />
+                                    ))}
+                                </div>
+
+                            </div>
+
+
+                            {/* Mix */}
+
+                            <div
+                                className="
+                                    flex
+                                    items-center
+                                    gap-2
+                                    bg-[#edd0b9]/20
+                                    p-2
+                                    rounded-2xl
+                                    border
+                                    border-espresso/5
+                                "
+                            >
+
+                                <div className="w-7 h-7 relative shrink-0">
+                                    <Image
+                                        src="/mix.png"
+                                        alt="Mix"
+                                        fill
+                                        sizes="28px"
+                                        className="object-contain"
+                                    />
+                                </div>
+
+                                <div className="flex gap-2">
+                                    {mixBoxes.map((box) => (
+                                        <BoxSelector
+                                            key={box.id}
+                                            box={box}
+                                        />
+                                    ))}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* =====================================================
+                            Order Notes
+                        ===================================================== */}
+
+                        <div className="w-full">
+
+                            <label
+                                htmlFor="order-notes"
+                                className={`
+                                    ${zain.className}
+                                    block
+                                    text-lg
+                                    font-bold
+                                    text-espresso
+                                    mb-2
+                                `}
+                            >
+                                عندك أي ملاحظات على الأوردر؟
+                            </label>
+
+                            <textarea
+                                id="order-notes"
+                                value={orderNotes}
+                                onChange={(e) =>
+                                    setOrderNotes(e.target.value)
+                                }
+                                rows={3}
+                                placeholder="أي ملاحظات زي: مش عايز هالوبينو، زوّد الصوص، أو أي حاجة تحب نعرفها ❤️"
+                                className={`
+                                    ${zain.className}
+                                    w-full
+                                    resize-none
+                                    rounded-2xl
+                                    border
+                                    border-espresso/10
+                                    bg-[#edd0b9]/30
+                                    px-4
+                                    py-3
+                                    text-base
+                                    md:text-lg
+                                    text-espresso
+                                    placeholder:text-espresso/45
+                                    outline-none
+                                    focus:border-mustard
+                                    focus:ring-2
+                                    focus:ring-mustard/20
+                                    transition-all
+                                `}
+                            />
+
+                        </div>
+
+
+                        {/* =====================================================
+                            Quantity + Order
+                        ===================================================== */}
+
+                        <div
+                            className="
+                                flex
+                                flex-col
+                                sm:flex-row
+                                items-stretch
+                                sm:items-center
+                                gap-3
+                                pt-2
+                            "
+                        >
+
+                            {/* Quantity */}
+
+                            <div
+                                className="
+                                    flex
+                                    items-center
+                                    justify-center
+                                    bg-mustard
+                                    text-espresso
+                                    rounded-full
+                                    p-1
+                                    shadow-inner
+                                    border
+                                    border-espresso/10
+                                    self-center
+                                    sm:self-auto
+                                "
+                            >
+
+                                <button
+                                    onClick={() =>
+                                        handleQuantity('inc')
+                                    }
+                                    aria-label="زيادة الكمية"
+                                    className="
+                                        w-10
+                                        h-10
+                                        rounded-full
+                                        bg-white/60
+                                        hover:bg-white
+                                        flex
+                                        items-center
+                                        justify-center
+                                        font-bold
+                                        transition-colors
+                                        duration-200
+                                    "
+                                >
+                                    <Plus
+                                        className="w-4 h-4 text-espresso"
+                                    />
+                                </button>
+
+
+                                <span
+                                    className={`
+                                        ${zain.className}
+                                        text-2xl
+                                        font-black
+                                        px-4
+                                    `}
+                                >
+                                    {quantity}
+                                </span>
+
+
+                                <button
+                                    onClick={() =>
+                                        handleQuantity('dec')
+                                    }
+                                    aria-label="تقليل الكمية"
+                                    className="
+                                        w-10
+                                        h-10
+                                        rounded-full
+                                        bg-white/60
+                                        hover:bg-white
+                                        flex
+                                        items-center
+                                        justify-center
+                                        font-bold
+                                        transition-colors
+                                        duration-200
+                                    "
+                                >
+                                    <Minus
+                                        className="w-4 h-4 text-espresso"
+                                    />
+                                </button>
+
+                            </div>
+
+
+                            {/* WhatsApp */}
+
+                            <a
+                                href={`https://wa.me/201228134545?text=${whatsappText}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`
+                                    flex
+                                    items-center
+                                    justify-center
+                                    gap-2
+                                    bg-mustard
+                                    hover:bg-[#d99f3b]
+                                    text-espresso
+                                    px-6
+                                    sm:px-8
+                                    py-3
+                                    rounded-full
+                                    font-bold
+                                    shadow-md
+                                    ${zain.className}
+                                    text-lg
+                                    md:text-xl
+                                    flex-1
+                                    transition-all
+                                    duration-200
+                                    hover:scale-[1.01]
+                                `}
+                            >
+
+                                <ShoppingBag className="w-5 h-5" />
+
+                                <span>
+                                    اطلب الآن
+                                </span>
+
+                                <span className="text-base opacity-85">
+                                    ({selectedBox.price * quantity} ج.م)
+                                </span>
+
+                            </a>
+
+                        </div>
+
                     </div>
 
                 </div>
 
             </div>
-        </div>
+
+        </>
     );
 }

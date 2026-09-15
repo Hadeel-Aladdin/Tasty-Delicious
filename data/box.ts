@@ -71,7 +71,7 @@ export const boxes: Box[] = [
         },
 
         contents: {
-            burger1: "6 برجر كلاسيك",
+            burger1: " 6 برجر كلاسيك",
             burger2: null,
             burger3: null,
             burger4: null,
@@ -89,7 +89,7 @@ export const boxes: Box[] = [
     {
         id: "volcano-box",
         name: "Volcano Box",
-        description: "تجربة قوية لمحبي النكهات الجريئة والطعم الحار",
+        description: "تجربة مميزة لمحبي البرجر الغرقان جبنة والنكهات الفريدة",
         price: 600,
 
         images: {
@@ -151,7 +151,7 @@ export const boxes: Box[] = [
         },
 
         contents: {
-            burger1: "برجر فولكانو 6",
+            burger1: " برجر فولكانو 6",
             burger2: null,
             burger3: null,
             burger4: null,
@@ -233,8 +233,8 @@ export const boxes: Box[] = [
         },
 
         contents: {
-            burger1: "برجر كلاسيك 3",
-            burger2: "برجر فولكانو 3",
+            burger1: "3 برجر كلاسيك",
+            burger2: "3 برجر فولكانو",
             burger3: null,
             burger4: null,
             bun: "6 قطع خبز بريوش",
@@ -317,7 +317,7 @@ export const boxes: Box[] = [
         },
 
         contents: {
-            burger1: "كوردن جريل 6",
+            burger1: "6 كوردن جريل",
             burger2: null,
             burger3: null,
             burger4: null,
@@ -397,7 +397,7 @@ export const boxes: Box[] = [
         },
 
         contents: {
-            burger1: "كوردن فرايد 6",
+            burger1: "6 كوردن فرايد",
             burger2: null,
             burger3: null,
             burger4: null,
@@ -478,8 +478,8 @@ export const boxes: Box[] = [
         },
 
         contents: {
-            burger1: "كوردن جريل 3",
-            burger2: "كوردن فرايد 3",
+            burger1: "3 كوردن جريل",
+            burger2: "3 كوردن فرايد",
             burger3: null,
             burger4: null,
             bun: "6 قطع خبز بريوش",
@@ -562,8 +562,8 @@ export const boxes: Box[] = [
         },
 
         contents: {
-            burger1: "برجر كلاسيك 3",
-            burger2: "كوردن جريل 3",
+            burger1: "3 برجر كلاسيك",
+            burger2: "3 كوردن جريل",
             burger3: null,
             burger4: null,
             bun: "6 قطع خبز بريوش",
@@ -649,10 +649,10 @@ export const boxes: Box[] = [
         },
 
         contents: {
-            burger1: "برجر كلاسيك 2",
-            burger2: "برجر فولكانو 2",
-            burger3: "كوردن جريل 2",
-            burger4: "كوردن فرايد 2",
+            burger1: "2 برجر كلاسيك",
+            burger2: "2 برجر فولكانو",
+            burger3: "2 كوردن جريل",
+            burger4: "2 كوردن فرايد",
             bun: "8 قطع خبز بريوش",
             pickles: "خيار مخلل",
             Halapino: "هالبينو",

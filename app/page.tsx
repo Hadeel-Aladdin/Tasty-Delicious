@@ -2,6 +2,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import MenuSection from "@/components/MenuSection";
+import WhyChooseUs from "@/components/WhyChooseUs";
+import OurStory from "../components/OurStory";
 //import { montez, moonDance, zain, aref } from "./font";
 
 function Home() {
@@ -12,8 +14,8 @@ function Home() {
       {/*Menu Section*/}
         <HeroSection />
         <MenuSection />
-        <div id="story" className="bg-cream min-h-[calc(100dvh-5rem)] w-full flex items-center justify-center border-b border-mustard/20">section 3</div>
-        <div id="chif-tips" className="bg-cream min-h-[calc(100dvh-5rem)] w-full flex items-center justify-center">section 4</div>
+        <OurStory/>
+        <WhyChooseUs/>
       <Footer />
     </>
   );

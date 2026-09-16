@@ -1,4 +1,4 @@
-/* Defining the structure for burger images */
+/* Defines the structure for a box's sandwich image */
 
 export type ImgDetails = {
     id: string;
@@ -6,23 +6,8 @@ export type ImgDetails = {
     alt: string;
 };
 
-export type ProductImages = {
-    topBun: ImgDetails;
-    Mayo: ImgDetails;
-    Halapino: ImgDetails;
-    pickles: ImgDetails;
-    cheddar: ImgDetails;
-    burger1: ImgDetails;
-    burger2: ImgDetails | null;
-    boxSauce: ImgDetails;
-    burger3: ImgDetails | null;
-    burger4: ImgDetails | null;
-    Ketchup: ImgDetails;
-    bottomBun: ImgDetails;
-};
 
-
-/* Defining the structure for Box content */
+/* Defines the structure for Box content */
 
 export type BoxFixedContent = {
     readonly MayoSauce: "مايونيز";
@@ -39,16 +24,18 @@ export type BoxSpicContent = {
     burger3: string | null;
     burger4: string | null;
     boxSauce: string;
+    // Secondary sauce, only present on boxes that combine two sauces (e.g. BBQ, T&D)
+    ranchSauce?: string | null;
 };
 
 
-/* Defining the structure for Boxes */
+/* Defines the structure for Boxes */
 
 export type Box = {
     id: string;
     name: string;
     description: string;
     price: number;
-    images: ProductImages;
+    image: ImgDetails;
     contents: BoxFixedContent & BoxSpicContent;
 };

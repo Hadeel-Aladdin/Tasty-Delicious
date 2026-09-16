@@ -7,7 +7,8 @@ function HeroSection() {
             id="hero"
             className="
                 relative 
-                bg-cream 
+                bg-cream dark:bg-espresso
+                transition-colors duration-300
                 overflow-hidden
                 min-h-[100dvh]
                 pt-30 pb-12 px-6 md:px-16 
@@ -21,9 +22,10 @@ function HeroSection() {
                 {/* صورة البرجر: ترتيبها 1 في الموبايل (عشان تظهر فوق) */}
                 <div className="order-1 lg:order-2 lg:col-span-5 relative flex justify-center items-center">
 
-                    <div className="absolute w-[280px] h-[280px] sm:w-[480px] sm:h-[480px] bg-mustard/35 rounded-full blur-[10px] z-0 scale-110 pointer-events-none" />
-                    <div className="absolute w-[260px] h-[260px] sm:w-[420px] sm:h-[420px] bg-espresso/90 rounded-[40%_60%_70%_30%/50%_60%_40%_50%] transition-all duration-700 hover:rotate-6 scale-105" />
-                    <div className="absolute w-[240px] h-[240px] sm:w-[380px] sm:h-[380px] bg-mustard opacity-90 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] -translate-x-4 translate-y-4 rotate-12" />
+                    {/* الدوائر الخلفية للبرجر */}
+                    <div className="absolute w-[280px] h-[280px] sm:w-[480px] sm:h-[480px] bg-mustard/35 dark:bg-mustard/20 rounded-full blur-[10px] z-0 scale-110 pointer-events-none transition-colors duration-300" />
+                    <div className="absolute w-[260px] h-[260px] sm:w-[420px] sm:h-[420px] bg-espresso/90 dark:bg-cream/5 rounded-[40%_60%_70%_30%/50%_60%_40%_50%] transition-all duration-700 hover:rotate-6 scale-105" />
+                    <div className="absolute w-[240px] h-[240px] sm:w-[380px] sm:h-[380px] bg-mustard opacity-90 dark:opacity-80 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] -translate-x-4 translate-y-4 rotate-12 transition-opacity duration-300" />
 
                     <div className="relative z-10 w-[260px] sm:w-[400px] h-[260px] sm:h-[400px]">
                         <Image
@@ -36,10 +38,11 @@ function HeroSection() {
                         />
                     </div>
 
-                    <div className="absolute top-0 right-0 sm:-top-4 sm:right-4 z-20 bg-cream/90 backdrop-blur-sm border-2 border-espresso p-2 sm:p-3 rounded-full shadow-xl flex flex-col items-center justify-center w-20 h-20 sm:w-28 sm:h-28 text-center text-espresso transform -rotate-12 hover:rotate-0 transition-transform">
-                        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider">★ ★ ★ ★ ★</span>
-                        <span className={`${aref.className} font-aref font-bold text-xs sm:text-base leading-tight`}>Premium Quality</span>
-                        <span className="text-[10px] sm:text-xs font-bold text-mustard">100%</span>
+                    {/* بادج التقييم */}
+                    <div className="absolute top-0 right-0 sm:-top-4 sm:right-4 z-20 bg-cream/90 dark:bg-espresso/80 backdrop-blur-sm border-2 border-espresso dark:border-mustard p-2 sm:p-3 rounded-full shadow-xl flex flex-col items-center justify-center w-20 h-20 sm:w-28 sm:h-28 text-center text-espresso dark:text-cream transform -rotate-12 hover:rotate-0 transition-all duration-300">
+                        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-mustard">★ ★ ★ ★ ★</span>
+                        <span className={`${aref.className} font-aref font-bold text-xs sm:text-base leading-tight mt-1`}>Premium Quality</span>
+                        <span className="text-[10px] sm:text-xs font-bold text-mustard mt-0.5">100%</span>
                     </div>
 
                 </div>
@@ -47,35 +50,37 @@ function HeroSection() {
                 {/* قسم النصوص: ترتيبه 2 في الموبايل (عشان يظهر تحت البرجر) */}
                 <div className="order-2 lg:order-1 lg:col-span-7 space-y-8 z-10 text-right">
 
-                    <h1 className={`${zain.className} font-bold text-3xl md:text-5xl lg:text-6xl text-espresso leading-tight`}>
+                    <h1 className={`${zain.className} font-bold text-4xl md:text-5xl lg:text-7xl text-espresso dark:text-cream leading-tight transition-colors duration-300`}>
                         عملناها على مزاجك
                     </h1>
 
-                    <div className={`${zain.className} text-xl md:text-2xl text-black/70 space-y-4 leading-relaxed font-semibold`}>
+                    <div className={`${zain.className} text-xl md:text-2xl text-espresso/80 dark:text-cream/80 space-y-4 leading-relaxed font-semibold transition-colors duration-300`}>
 
                         {/*  عُرض في الموبايل والتابلت فقط (يختفي من الشاشات الكبيرة lg) */}
                         <div className="block lg:hidden space-y-4">
-                            <p className={`${montez.className} font-light text-mustard text-4xl sm:text-5xl`}>
+                            <p className={`${montez.className} font-light text-mustard text-5xl sm:text-6xl drop-shadow-sm`}>
                                 Tasty &amp; Delicious
                             </p>
                             <p>
                                 بتقدملك بوكسات برجر متفصلة على ذوقك
                             </p>
                             <p>
-                                بأعلى جودة وبموكونات فريش جاهزة لتجربة تسوية فريدة
+                                بأعلى جودة ومكونات فريش جاهزة لتجربة تسوية فريدة
                             </p>
                         </div>
 
                         {/* يُعرض في الشاشات الكبيرة lg فقط (مخفي في الموبايل والتابلت) */}
-                        <div className="hidden lg:block space-y-4">
+                        <div dir="rtl" className="hidden lg:block space-y-4">
                             <p>
-                                بتقدملك بوكسات برجر متفصلة على ذوقك{" "}
-                                <span className={`${montez.className} font-light text-mustard text-4xl sm:text-5xl inline-block`}>
+                                <span className={`${montez.className} font-light text-mustard text-5xl sm:text-6xl inline-block mr-2`}>
                                     Tasty &amp; Delicious
                                 </span>
+                                بتقدملك بوكسات برجر
+                                <br/>
+                                 متفصلة على ذوقك
                             </p>
                             <p>
-                                بأعلى جودة وبموكونات فريش جاهزة لتجربة تسوية فريدة
+                                بأعلى جودة ومكونات فريش جاهزة لتجربة تسوية فريدة
                             </p>
                         </div>
 
@@ -85,7 +90,7 @@ function HeroSection() {
                         <a
                             href="#menuBoxes"
                             rel="noopener noreferrer"
-                            className={`${zain.className} inline-block bg-mustard text-cream hover:bg-cream hover:text-mustard border-2 border-transparent hover:border-mustard font-zain text-xl sm:text-2xl md:text-3xl font-bold px-6 sm:px-8 py-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer`}
+                            className={`${zain.className} inline-block bg-mustard text-cream dark:text-espresso hover:bg-cream dark:hover:bg-espresso hover:text-mustard dark:hover:text-mustard border-2 border-transparent hover:border-mustard dark:hover:border-mustard font-zain text-xl sm:text-2xl md:text-3xl font-bold px-8 sm:px-10 py-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer`}
                         >
                             اختار بوكس السهرة
                         </a>

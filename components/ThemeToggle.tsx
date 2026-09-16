@@ -3,11 +3,16 @@
 import React from "react";
 import styled from "styled-components";
 
-const Switch = () => {
+interface SwitchProps {
+  checked: boolean;
+  onChange: () => void;
+}
+
+const Switch: React.FC<SwitchProps> = ({ checked, onChange }) => {
   return (
     <StyledWrapper>
       <label className="switch">
-        <input id="input" type="checkbox" />
+        <input id="input" type="checkbox" checked={checked} onChange={onChange} />
         <div className="slider round">
           <div className="sun-moon">
             <svg id="moon-dot-1" className="moon-dot" viewBox="0 0 100 100">
@@ -118,6 +123,7 @@ const StyledWrapper = styled.div`
     bottom: 4px;
     background-color: yellow;
     transition: 0.4s;
+    animation: rotate-center-reverse 0.6s ease-in-out both;
   }
 
   #input:checked + .slider {
@@ -131,6 +137,7 @@ const StyledWrapper = styled.div`
   #input:checked + .slider .sun-moon {
     transform: translateX(26px);
     background-color: white;
+    /* عدلنا الأنيميشن هنا عشان القمر يتدحرج برضه */
     animation: rotate-center 0.6s ease-in-out both;
   }
 
@@ -269,15 +276,12 @@ const StyledWrapper = styled.div`
     0% {
       transform: translateX(0px);
     }
-
     40% {
       transform: translateX(4px);
     }
-
     80% {
       transform: translateX(-4px);
     }
-
     100% {
       transform: translateX(0px);
     }
@@ -334,27 +338,34 @@ const StyledWrapper = styled.div`
     0% {
       transform: scale(1);
     }
-
     40% {
       transform: scale(1.2);
     }
-
     80% {
       transform: scale(0.8);
     }
-
     100% {
       transform: scale(1);
     }
   }
 
+  /* القمر بيتحرك لليمين وبيلف 360 درجة */
   @keyframes rotate-center {
     0% {
-      transform: rotate(0);
+      transform: translateX(0) rotate(0deg);
     }
-
     100% {
       transform: translateX(26px) rotate(360deg);
+    }
+  }
+
+  /* الشمس بترجع للشمال وبتلف 360 درجة بالعكس عشان تتدحرج صح */
+  @keyframes rotate-center-reverse {
+    0% {
+      transform: translateX(26px) rotate(360deg);
+    }
+    100% {
+      transform: translateX(0) rotate(0deg);
     }
   }
 `;

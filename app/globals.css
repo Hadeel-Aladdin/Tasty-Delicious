@@ -1,7 +1,15 @@
 @import "tailwindcss";
 
+/* Tailwind v4 does not ship a class-based dark variant by default
+   (it defaults to prefers-color-scheme). Since the theme toggle
+   works by adding/removing the "dark" class on <html> via next-themes,
+   we need to explicitly tell Tailwind to key its dark: utilities off
+   that class instead of the OS color scheme. Without this line,
+   dark: utilities never apply even though the class toggles correctly. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
+  --background: #f8f1e3;
   --foreground: #171717;
 }
 
@@ -17,11 +25,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark mode overrides, driven by the "dark" class on <html> (next-themes) */
+.dark {
+  --background: #553e2b;
+  --foreground: #f8f1e3;
 }
 
 body {

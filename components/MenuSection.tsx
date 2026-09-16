@@ -4,24 +4,16 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Flame,
     Crown,
     Plus,
     Minus,
     ShoppingBag,
-    Utensils,
-    CookingPot,
-    Sandwich,
-    Beef,
-    Drumstick,
-    Cuboid,
-    Salad,
 } from 'lucide-react';
 
 import { Aref_Ruqaa, Zain } from 'next/font/google';
 
 import { boxes } from '@/data/box';
-import type { Box, ImgDetails } from '@/types/product';
+import type { Box } from '@/types/product';
 
 const aref = Aref_Ruqaa({
     weight: ['400', '700'],
@@ -35,193 +27,22 @@ const zain = Zain({
 
 
 /* =====================================================
-    Exploded-stack layer builder
-===================================================== */
-
-type StackLayer = {
-    key: string;
-    src: string;
-    alt: string;
-    width: number;
-    height: number;
-    marginTop: number;
-};
-
-const SIZE = {
-    bun: { width: 210, height: 85 },
-    bottomBun: { width: 210, height: 70 },
-    sauce: { width: 155, height: 45 },
-    wide: { width: 170, height: 55 },
-    cheese: { width: 190, height: 45 },
-    patty: { width: 180, height: 55 },
-};
-
-const RANCH_SAUCE: ImgDetails = {
-    id: 'ranch-sauce',
-    image: '/products/ranch-sauce.png',
-    alt: 'صوص رانش',
-};
-
-
-function buildStack(box: Box): StackLayer[] {
-    const layers: StackLayer[] = [];
-
-    const push = (
-        key: string,
-        img: ImgDetails | null | undefined,
-        size: { width: number; height: number },
-        overlap: number
-    ) => {
-        if (!img?.image) return;
-
-        layers.push({
-            key,
-            src: img.image,
-            alt: img.alt,
-            width: size.width,
-            height: size.height,
-            marginTop: layers.length === 0 ? 0 : -overlap,
-        });
-    };
-
-    const isTD = box.id === 'T&D box';
-
-    push('top-bun', box.images.topBun, SIZE.bun, 0);
-    push('ketchup', box.images.Ketchup, SIZE.sauce, 10);
-    push('pickles', box.images.pickles, SIZE.wide, 25);
-    push('halapino', box.images.Halapino, SIZE.wide, 25);
-    push('cheddar-top', box.images.cheddar, SIZE.cheese, 25);
-    push('burger1', box.images.burger1, SIZE.patty, 20);
-
-    if (isTD) {
-        // ترتيب خاص لـ T&D Box
-        push(
-            'taxas-sauce',
-            box.images.boxSauce,
-            SIZE.sauce,
-            15
-        );
-
-        push(
-            'burger2',
-            box.images.burger2,
-            SIZE.patty,
-            20
-        );
-
-        push(
-            'cheddar-sauce',
-            box.images.cheddar,
-            SIZE.sauce,
-            15
-        );
-
-        push(
-            'burger3',
-            box.images.burger3,
-            SIZE.patty,
-            20
-        );
-
-        push(
-            'ranch-sauce',
-            RANCH_SAUCE,
-            SIZE.sauce,
-            15
-        );
-
-        push(
-            'burger4',
-            box.images.burger4,
-            SIZE.patty,
-            20
-        );
-    } else {
-        push(
-            'box-sauce',
-            box.images.boxSauce,
-            SIZE.sauce,
-            15
-        );
-
-        push(
-            'burger3',
-            box.images.burger3,
-            SIZE.patty,
-            20
-        );
-
-        // احتياطي لأي بوكس مستقبلي
-        push(
-            'burger2',
-            box.images.burger2,
-            SIZE.patty,
-            20
-        );
-
-        push(
-            'burger4',
-            box.images.burger4,
-            SIZE.patty,
-            20
-        );
-    }
-
-    push('mayo', box.images.Mayo, SIZE.sauce, 15);
-    push('bottom-bun', box.images.bottomBun, SIZE.bottomBun, 25);
-
-    return layers;
-}
-
-
-/* =====================================================
-    Stack variants
-===================================================== */
-
-type StackVariant = 'single' | 'double' | 'quad';
-
-function getStackVariant(box: Box): StackVariant {
-    const singleIds = [
-        'classic-box',
-        'volcano-box',
-        'grill-cordon-box',
-        'fried-cordon-box',
-    ];
-
-    const doubleIds = [
-        'matching-box',
-        'cordon-mix-box',
-        'bbq-box',
-    ];
-
-    if (box.id === 'T&D box') return 'quad';
-    if (doubleIds.includes(box.id)) return 'double';
-    if (singleIds.includes(box.id)) return 'single';
-
-    return 'single';
-}
-
-const SMOKE_SCALE: Record<StackVariant, number> = {
-    single: 1,
-    double: 1.15,
-    quad: 1.35,
-};
-
-
-/* =====================================================
     Ingredient icons
 ===================================================== */
 
 function getIngredientIcon(item: string) {
     const value = item.toLowerCase();
 
-    // Sauces
+    // Sauces & Cheese
     if (
         value.includes('صوص') ||
         value.includes('مايونيز') ||
-        value.includes('كاتشب')
+        value.includes('كاتشب') ||
+        value.includes('جبنة') ||
+        value.includes('جبن') ||
+        value.includes('شيدر')
     ) {
-        return CookingPot;
+        return '/sauce.png';
     }
 
     // Bun
@@ -230,37 +51,20 @@ function getIngredientIcon(item: string) {
         value.includes('بريوش') ||
         value.includes('عيش')
     ) {
-        return Sandwich;
+        return '/bun.png';
     }
 
-    // Chicken
-    // Chicken / Cordon
+    // All Burgers (Beef & Chicken)
     if (
         value.includes('فراخ') ||
         value.includes('دجاج') ||
         value.includes('تشيكن') ||
         value.includes('كوردن') ||
-        value.includes('cordon')
-    ) {
-        return Drumstick;
-    }
-
-    // Beef
-    if (
+        value.includes('cordon') ||
         value.includes('لحم') ||
         value.includes('برجر')
     ) {
-        return Beef;
-    }
-
-
-    // Cheese
-    if (
-        value.includes('جبنة') ||
-        value.includes('جبن') ||
-        value.includes('شيدر')
-    ) {
-        return Cuboid;
+        return '/burger.png';
     }
 
     // Pickles
@@ -268,7 +72,7 @@ function getIngredientIcon(item: string) {
         value.includes('مخلل') ||
         value.includes('خيار')
     ) {
-        return Salad;
+        return '/pickle.png';
     }
 
     // Jalapeno / spicy
@@ -277,10 +81,11 @@ function getIngredientIcon(item: string) {
         value.includes('هالبينو') ||
         value.includes('حار')
     ) {
-        return Flame;
+        return '/spicy.png';
     }
 
-    return Utensils;
+    // Default icon just in case
+    return '/burger.png';
 }
 
 
@@ -293,7 +98,7 @@ export default function MenuSection() {
     const [selectedBox, setSelectedBox] = useState<Box>(boxes[0]);
     const [quantity, setQuantity] = useState<number>(1);
 
-    // ملاحظات العميل
+    // Customer notes for the order
     const [orderNotes, setOrderNotes] = useState('');
 
 
@@ -353,11 +158,10 @@ export default function MenuSection() {
 
     const whatsappText = encodeURIComponent(
         `أهلاً، عايز أطلب أوردر:
-
-- ${selectedBox.name}
-- العدد: ${quantity}
-- الإجمالي: ${selectedBox.price * quantity} ج.م
-- ملاحظات: ${orderNotes.trim() || 'لا توجد ملاحظات'}`
+        - ${selectedBox.name}
+        - العدد: ${quantity}
+        - الإجمالي: ${selectedBox.price * quantity} ج.م
+        - ملاحظات: ${orderNotes.trim() || 'لا توجد ملاحظات'}`
     );
 
 
@@ -371,13 +175,6 @@ export default function MenuSection() {
         setOrderNotes('');
     };
 
-
-    /* =====================================================
-        Stack
-    ===================================================== */
-
-    const stack = buildStack(selectedBox);
-    const variant = getStackVariant(selectedBox);
 
 
     /* =====================================================
@@ -399,7 +196,7 @@ export default function MenuSection() {
                 ? 'text-cream'
                 : isSelected || isSpecial
                     ? 'text-mustard'
-                    : 'text-espresso';
+                    : 'text-espresso dark:text-cream';
 
 
         return (
@@ -424,7 +221,7 @@ export default function MenuSection() {
                     ${aref.className}
 
                     ${isSelected
-                        ? 'scale-110 shadow-md ring-2 ring-espresso/20'
+                        ? 'scale-110 shadow-md ring-2 ring-espresso/20 dark:ring-cream/20'
                         : 'hover:scale-105'
                     }
 
@@ -437,8 +234,8 @@ export default function MenuSection() {
                                 ? 'border-mustard bg-mustard'
                                 : 'border-mustard/60 bg-mustard/30'
                             : isSelected
-                                ? 'border-mustard bg-cream'
-                                : 'border-mustard/40 bg-cream/20'
+                                ? 'border-mustard bg-cream dark:bg-espresso/60'
+                                : 'border-mustard/40 bg-cream/20 dark:bg-cream/5'
                     }
                 `}
             >
@@ -500,6 +297,7 @@ export default function MenuSection() {
                 dir='rtl'
                 className="
                     bg-cream
+                    dark:bg-espresso
                     w-full
                     px-5
                     pt-30
@@ -516,6 +314,7 @@ export default function MenuSection() {
                             md:text-5xl
                             font-bold
                             text-espresso
+                            dark:text-cream
                             mb-8
                         `}
                     >
@@ -530,6 +329,7 @@ export default function MenuSection() {
                             md:text-lg
                             leading-8
                             text-espresso/75
+                            dark:text-cream/75
                         `}
                     >
                         <p>
@@ -541,10 +341,10 @@ export default function MenuSection() {
                         <p>
                             ومكوناتك بتوصلك طازة ومحافظة على حرارتها،
                             لأن كل بوكس بيجيلك جوّه
-                            <span className="font-bold text-espresso">
+                            <span className="font-bold text-espresso dark:text-cream/75 ml-1">
                                 {' '}Cooling Bag
                             </span>
-                            مخصوص يحافظ عليها لحد ما توصل لك.
+                             مخصوص يحافظ عليها لحد ما توصل لك.
                         </p>
                     </div>
 
@@ -561,11 +361,12 @@ export default function MenuSection() {
                 dir="rtl"
                 className="
                     bg-cream
+                    dark:bg-espresso
                     overflow-x-hidden
                     scroll-mt-20
                     w-full min-h-[100dvh]
                     min-h-screen
-                    lg:h-screen
+                    lg:min-h-screen
                     px-4
                     md:px-10
                     py-6
@@ -589,10 +390,7 @@ export default function MenuSection() {
 
 
                     {/* =====================================================
-                        Exploded View
-
-                        Mobile: FIRST
-                        Desktop: LEFT
+                        Boxes Photos
                     ===================================================== */}
 
                     <div
@@ -642,77 +440,29 @@ export default function MenuSection() {
                                 "
                             >
 
-                                {/* Smoke background */}
-
-                                <div
-                                    className="
-                                        absolute
-                                        inset-0
-                                        flex
-                                        items-center
-                                        justify-center
-                                        pointer-events-none
-                                    "
-                                    style={{
-                                        zIndex: 0,
-                                    }}
-                                >
-                                    <div
-                                        className="relative w-[280px] h-[280px]"
-                                        style={{
-                                            transform: `scale(${SMOKE_SCALE[variant]})`,
-                                        }}
-                                    >
-                                        <Image
-                                            src="/products/smoke.png"
-                                            alt=""
-                                            fill
-                                            sizes="400px"
-                                            className="object-contain opacity-50"
-                                        />
-                                    </div>
-                                </div>
-
-
-                                {/* Burger Stack */}
+                                {/* Sandwich Image */}
 
                                 <div
                                     className="
                                         relative
-                                        flex
-                                        flex-col
-                                        items-center
+                                        w-[300px]
+                                        h-[300px]
+                                        md:w-[450px]
+                                        md:h-[450px]
                                     "
                                     style={{
                                         zIndex: 1,
                                     }}
                                 >
 
-                                    {stack.map((layer, index) => (
-
-                                        <div
-                                            key={layer.key}
-                                            className="relative"
-                                            style={{
-                                                width: layer.width,
-                                                height: layer.height,
-                                                marginTop: layer.marginTop,
-                                                zIndex: stack.length - index,
-                                            }}
-                                        >
-
-                                            <Image
-                                                src={layer.src}
-                                                alt={layer.alt}
-                                                fill
-                                                priority={index < 2}
-                                                sizes={`${layer.width}px`}
-                                                className="object-contain"
-                                            />
-
-                                        </div>
-
-                                    ))}
+                                    <Image
+                                        src={selectedBox.image.image}
+                                        alt={selectedBox.image.alt}
+                                        fill
+                                        priority
+                                        sizes="300px"
+                                        className="object-contain"
+                                    />
 
                                 </div>
 
@@ -727,6 +477,7 @@ export default function MenuSection() {
                             className={`
                                 text-center
                                 text-espresso
+                                dark:text-cream
                                 ${zain.className}
                                 mt-1
                                 md:mt-4
@@ -742,9 +493,6 @@ export default function MenuSection() {
 
                     {/* =====================================================
                         Box Information
-
-                        Mobile: SECOND
-                        Desktop: RIGHT
                     ===================================================== */}
 
                     <div
@@ -756,7 +504,6 @@ export default function MenuSection() {
                             flex-col
                             justify-between
                             h-auto
-                            lg:h-full
                             space-y-6
                             w-full
                         "
@@ -796,6 +543,7 @@ export default function MenuSection() {
                                             sm:text-4xl
                                             md:text-5xl
                                             text-espresso
+                                            dark:text-cream
                                             font-bold
                                         `}
                                     >
@@ -874,6 +622,7 @@ export default function MenuSection() {
                                         text-lg
                                         md:text-xl
                                         text-espresso/80
+                                        dark:text-cream/80
                                     `}
                                 >
                                     {selectedBox.description}
@@ -896,7 +645,7 @@ export default function MenuSection() {
 
                                     {boxContentsList.map((item, index) => {
 
-                                        const Icon = getIngredientIcon(item);
+                                        const iconPath = getIngredientIcon(item);
 
                                         return (
                                             <div
@@ -906,24 +655,26 @@ export default function MenuSection() {
                                                     items-center
                                                     gap-2
                                                     bg-[#edd0b9]/40
+                                                    dark:bg-cream/5
                                                     px-3.5
                                                     py-2
                                                     rounded-xl
                                                     border
                                                     border-espresso/5
+                                                    dark:border-cream/10
                                                     min-w-0
                                                 "
                                             >
 
-                                                <Icon
-                                                    className="
-                                                        w-4
-                                                        h-4
-                                                        text-mustard
-                                                        shrink-0
-                                                    "
-                                                    strokeWidth={2.2}
-                                                />
+                                                <div className="relative w-6 h-6 shrink-0">
+                                                    <Image
+                                                        src={iconPath}
+                                                        alt={item}
+                                                        fill
+                                                        sizes="24px"
+                                                        className="object-contain drop-shadow-sm"
+                                                    />
+                                                </div>
 
                                                 <span
                                                     className={`
@@ -932,6 +683,7 @@ export default function MenuSection() {
                                                         md:text-lg
                                                         font-bold
                                                         text-espresso
+                                                        dark:text-cream
                                                         leading-tight
                                                     `}
                                                 >
@@ -970,10 +722,12 @@ export default function MenuSection() {
                                     items-center
                                     gap-2
                                     bg-[#edd0b9]/20
+                                    dark:bg-cream/5
                                     p-2
                                     rounded-2xl
                                     border
                                     border-espresso/5
+                                    dark:border-cream/10
                                 "
                             >
 
@@ -1007,10 +761,12 @@ export default function MenuSection() {
                                     items-center
                                     gap-2
                                     bg-[#edd0b9]/20
+                                    dark:bg-cream/5
                                     p-2
                                     rounded-2xl
                                     border
                                     border-espresso/5
+                                    dark:border-cream/10
                                 "
                             >
 
@@ -1044,10 +800,12 @@ export default function MenuSection() {
                                     items-center
                                     gap-2
                                     bg-[#edd0b9]/20
+                                    dark:bg-cream/5
                                     p-2
                                     rounded-2xl
                                     border
                                     border-espresso/5
+                                    dark:border-cream/10
                                 "
                             >
 
@@ -1089,6 +847,7 @@ export default function MenuSection() {
                                     text-lg
                                     font-bold
                                     text-espresso
+                                    dark:text-cream
                                     mb-2
                                 `}
                             >
@@ -1110,13 +869,17 @@ export default function MenuSection() {
                                     rounded-2xl
                                     border
                                     border-espresso/10
+                                    dark:border-cream/10
                                     bg-[#edd0b9]/30
+                                    dark:bg-cream/5
                                     px-4
                                     py-3
                                     text-base
                                     md:text-lg
                                     text-espresso
+                                    dark:text-cream
                                     placeholder:text-espresso/45
+                                    dark:placeholder:text-cream/45
                                     outline-none
                                     focus:border-mustard
                                     focus:ring-2

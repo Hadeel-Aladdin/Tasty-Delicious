@@ -1,20 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { List, X } from "lucide-react";
+import { useTheme } from "next-themes";
 import { montez, zain } from "../app/font";
 import Switch from "@/components/ThemeToggle";
 
 function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { theme, setTheme } = useTheme();
+    // ستيت جديدة عشان نتأكد إن الـ component عمل render في البراوزر الأول
+    const [mounted, setMounted] = useState(false);
 
-    // دالة تبديل الثيم بتغير كلاس الـ html والـ LocalStorage مباشرة بدون State تسبب Cascading Renders
+    useEffect(() => {
+        // بنأخر تغيير الـ state عشان React ميزعلش
+        const timer = setTimeout(() => {
+            setMounted(true);
+        }, 0);
+
+        // بننضف الـ timer لو الكومبوننت اتشال
+        return () => clearTimeout(timer);
+    }, []);
+
     const toggleTheme = () => {
-        const isDark = document.documentElement.classList.toggle("dark");
-        console.log(isDark)
-        console.log("isDark")
-        localStorage.setItem("theme", isDark ? "dark" : "light");
+        setTheme(theme === "dark" ? "light" : "dark");
     };
 
     return (
@@ -28,7 +38,12 @@ function Header() {
                         alt="T&D Logo"
                         width={32}
                         height={32}
-                        className="w-auto h-auto m-1"
+                        className="
+                            w-auto h-auto m-1 p-1.5 
+                            rounded-full 
+                            dark:bg-mustard 
+                            transition-all duration-300
+                        "
                     />
                     <h1 className={`${montez.className} text-2xl sm:text-3xl text-mustard whitespace-nowrap`}>
                         Tasty & Delicious
@@ -41,20 +56,19 @@ function Header() {
                     <a href="#offers" className="hover:text-mustard transition-colors">العروض</a>
                     <a href="#menu" className="hover:text-mustard transition-colors">المنيو</a>
                     <a href="#story" className="hover:text-mustard transition-colors">قصتنا</a>
+                    <a href="#whyChooseUs" className="hover:text-mustard transition-colors">لية تختارنا</a>
                 </nav>
 
                 {/* Right Controls: Theme Switcher & Order Button & Mobile Toggle */}
                 <div className="flex items-center gap-3">
 
-                    {/* Dark / Light Mode Switcher */}
-                    <button
-                        type="button"
-                        className="p-1 hover:opacity-80 transition-opacity focus:outline-none"
-                        onClick={toggleTheme}
-                        aria-label="Toggle Theme"
-                    >
-                        <Switch />
-                    </button>
+                    {/* Dark / Light Mode Switcher - desktop only */}
+                    {/* شيلنا الـ button واستخدمنا div عادي */}
+                    <div className="hidden md:inline-flex p-1 hover:opacity-80 transition-opacity">
+                        {mounted && (
+                            <Switch checked={theme === "dark"} onChange={toggleTheme} />
+                        )}
+                    </div>
 
                     {/* WhatsApp Order Button */}
                     <a
@@ -109,6 +123,15 @@ function Header() {
                         >
                             قصتنا
                         </a>
+
+                        {/* Dark / Light Mode Switcher - mobile only */}
+                        {/* استخدمنا label عشان الـ click يسمّع في الـ input اللي جوه الـ Switch مباشرة */}
+                        {mounted && (
+                            <label className="flex items-center gap-2 text-lg hover:text-mustard transition-colors cursor-pointer">
+                                <Switch checked={theme === "dark"} onChange={toggleTheme} />
+                                <span>الوضع الليلي</span>
+                            </label>
+                        )}
                     </nav>
                 </div>
             )}

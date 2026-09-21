@@ -12,10 +12,10 @@ function Home() {
       <Header />
       {/*Main Body*/}
       {/*Menu Section*/}
-        <HeroSection />
-        <MenuSection />
-        <OurStory/>
-        <WhyChooseUs/>
+      <HeroSection />
+      <WhyChooseUs />
+      <MenuSection />
+      <OurStory />
       <Footer />
     </>
   );

@@ -13,7 +13,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "classic-box-sandwich",
-            image: "/sandwiches/classic-beef.png",
+            image: "/boxes/classic-box-image.png",
             alt: "ساندوتش Classic Box",
         },
 

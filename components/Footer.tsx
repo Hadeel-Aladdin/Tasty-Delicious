@@ -115,7 +115,7 @@ function Footer() {
                                 alt="T&D Logo"
                                 width={28}
                                 height={28}
-                                className="w-auto h-auto m-0.5 p-1 rounded-full dark:bg-mustard transition-all duration-300"
+                                className="w-auto h-auto m-0.5 p-1 rounded-full bg-mustard transition-all duration-300"
                             />
                         </div>
                         <span className="text-sm font-normal text-espresso/70 dark:text-cream/70 mt-1">

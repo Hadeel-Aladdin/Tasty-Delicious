@@ -57,7 +57,7 @@ function Footer() {
                                     alt="T&D Logo"
                                     width={30}
                                     height={30}
-                                    className="w-auto h-auto m-0.5 p-1 rounded-full dark:bg-mustard transition-all duration-300 group-hover:rotate-12"
+                                    className="w-auto h-auto m-0.5 p-1 rounded-full bg-mustard transition-all duration-300 group-hover:rotate-12"
                                 />
                             </div>
                             {/* السلوجان */}

@@ -309,7 +309,7 @@ export default function MenuSection() {
 
                     <h2
                         className={`
-                            ${aref.className}
+                            ${zain.className}
                             text-4xl
                             md:text-5xl
                             font-bold
@@ -318,7 +318,7 @@ export default function MenuSection() {
                             mb-8
                         `}
                     >
-                        المينيو والبوكسات
+                        المنيو والبوكسات
                     </h2>
 
 
@@ -333,7 +333,7 @@ export default function MenuSection() {
                         `}
                     >
                         <p>
-                            كل بوكس فيه المكونات والصوصات اللي محتاجها
+                            كل بوكس فيه المكونات والصوصات اللي بتوفرلك تجربة مختلفة
                             عشان تعمل برجر على مزاجك،
                             وكل اللي ناقصه هو التسوية بالطريقة اللي تحبها.
                         </p>

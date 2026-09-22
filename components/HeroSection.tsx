@@ -39,10 +39,50 @@ function HeroSection() {
                     </div>
 
                     {/* بادج التقييم */}
-                    <div className="absolute top-0 right-0 sm:-top-4 sm:right-4 z-20 bg-cream/90 dark:bg-espresso/80 backdrop-blur-sm border-2 border-espresso dark:border-mustard p-2 sm:p-3 rounded-full shadow-xl flex flex-col items-center justify-center w-20 h-20 sm:w-28 sm:h-28 text-center text-espresso dark:text-cream transform -rotate-12 hover:rotate-0 transition-all duration-300">
-                        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-mustard">★ ★ ★ ★ ★</span>
-                        <span className={`${aref.className} font-aref font-bold text-xs sm:text-base leading-tight mt-1`}>Premium Quality</span>
-                        <span className="text-[10px] sm:text-xs font-bold text-mustard mt-0.5">100%</span>
+                    <div className="absolute -top-2 -right-2 sm:-top-4 sm:right-4 z-20 w-24 h-24 sm:w-32 sm:h-32 text-espresso dark:text-cream transform -rotate-12 hover:rotate-0 transition-all duration-300 drop-shadow-xl">
+                        <svg viewBox="0 0 100 100" className="w-full h-full">
+                            <defs>
+                                {/* قوس النجوم: تم إنزاله وتضييقه ليدخل داخل الدائرة ويبتعد عن الحافة */}
+                                <path id="starsPath" d="M 22,50 A 28,28 0 1,1 78,50" />
+
+                                {/* قوس 100%: تم رفعه وتضييقه ليدخل داخل الدائرة وتقترب النسبة من كلمة Quality */}
+                                <path id="bottomPath" d="M 24,54 A 26,26 0 0,0 76,48" />
+                            </defs>
+
+                            {/* خلفية البادج الدائرية */}
+                            <circle
+                                cx="50"
+                                cy="50"
+                                r="44"
+                                className="fill-cream/90 dark:fill-espresso/90 stroke-espresso dark:stroke-mustard"
+                                strokeWidth="2.5"
+                            />
+
+                            {/* النجوم مائلة ومبعدة عن حافة الدائرة العلوية */}
+                            <text className="fill-mustard text-[9px] font-bold tracking-[2px]">
+                                <textPath href="#starsPath" startOffset="50%" textAnchor="middle">
+                                    ★★★★★
+                                </textPath>
+                            </text>
+
+                            {/* النص الأوسط Premium Quality متناسق في المنتصف */}
+                            <text
+                                x="50"
+                                y="43"
+                                textAnchor="middle"
+                                className={`${aref.className} fill-espresso dark:fill-cream font-bold text-[10.5px] sm:text-[11.5px]`}
+                            >
+                                <tspan x="50" dy="5">Premium</tspan>
+                                <tspan x="50" dy="11">Quality</tspan>
+                            </text>
+
+                            {/* نسبة 100% قريبة جداً من كلمة Quality ومبتعدة عن الحافة السفلية */}
+                            <text className="fill-mustard text-[8.5px] font-bold">
+                                <textPath href="#bottomPath" startOffset="50%" textAnchor="middle">
+                                    100%
+                                </textPath>
+                            </text>
+                        </svg>
                     </div>
 
                 </div>
@@ -76,8 +116,8 @@ function HeroSection() {
                                     Tasty &amp; Delicious
                                 </span>
                                 بتقدملك بوكسات برجر
-                                <br/>
-                                 متفصلة على ذوقك
+                                <br />
+                                متفصلة على ذوقك
                             </p>
                             <p>
                                 بأعلى جودة ومكونات فريش جاهزة لتجربة تسوية فريدة

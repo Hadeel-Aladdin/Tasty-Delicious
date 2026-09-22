@@ -41,7 +41,7 @@ function Header() {
                         className="
                             w-auto h-auto m-1 p-1.5 
                             rounded-full 
-                            dark:bg-mustard 
+                            bg-mustard 
                             transition-all duration-300
                         "
                     />

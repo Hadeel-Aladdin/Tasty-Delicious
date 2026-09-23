@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Zain } from 'next/font/google';
+import { montez } from '@/app/font';
 import { 
     Clock, 
     ChefHat, 
@@ -14,11 +15,10 @@ import {
     Truck,
     Utensils,
     ShoppingBag,
-    Star // ضفنا أيقونة النجمة هنا
+    Star
 } from 'lucide-react';
-import { aref } from '@/app/font';
 
-// توحيد الخط لـ Zain فقط
+
 const zain = Zain({ weight: ['400', '700', '800', '900'], subsets: ['arabic'] });
 
 function WhyChooseUs() {
@@ -35,46 +35,46 @@ function WhyChooseUs() {
                         ليه تختار Tasty & Delicious؟
                     </h2>
                     <p className={`${zain.className} text-lg md:text-2xl text-espresso/80 dark:text-cream/80 max-w-2xl mx-auto font-semibold`}>
-                        لأننا بنقدملك تجربة مختلفة تماماً.. طعم وجودة المطاعم الكبيرة، بس بمتعة ونضافة عمايل إيدك في البيت، ومن غير ما تضيع وقتك في التحضير!
+                        لأننا بنقدملك تجربة مختلفة تماماً.. طعم وجودة المطاعم الكبيرة، بس بمتعة وترتيب البرجر اللي بتعمله في البيت، ومن غير ما تضيع وقتك في التحضير
                     </p>
                 </div>
 
                 {/* =====================================================
-                    3. Timeline (اللاين في النص والكاردز يمين وشمال)
+                    3. Timeline (line in the middle, cards on the right and left)
                 ===================================================== */}
                 <div className="relative mb-24 md:mb-32 max-w-5xl mx-auto">
                     
-                    {/* الخط المنقط الثابت في النص للديسكتوب، وعلى اليمين للموبايل */}
+                    {/* Fixed dashed line: centered on desktop, on the right edge on mobile */}
                     <div className="absolute right-[23px] md:right-auto md:left-1/2 top-0 bottom-0 w-0.5 border-l-4 border-dashed border-mustard/40 md:-translate-x-1/2 z-0"></div>
 
                     <div className="space-y-12 relative z-10">
                         
-                        {/* Feature 1 (كارت يمين - أيكون في النص - فاضي شمال) */}
+                        {/* Feature 1 (card on the right - icon in the middle - empty on the left) */}
                         <div dir='rtl' className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-8 items-center">
                             
-                            {/* الموبايل بيظهر الكارت هنا عادي، في الديسكتوب الكارت ده بيبقى على اليمين */}
-                            <div dir='rtl' className="order-2 md:order-1 ml-12 md:ml-0 md:text-right">
+                            {/* On mobile the card sits here with a right margin so it stays clear of the line; on desktop it is the right-hand card */}
+                            <div dir='rtl' className="order-2 md:order-1 mr-8 md:mr-0 md:text-right">
                                 <motion.div whileHover={{ scale: 1.03 }} className="bg-white/60 dark:bg-black/20 p-6 md:p-8 rounded-3xl border-2 border-mustard/20 shadow-sm relative">
-                                    <h3 className={`${zain.className} text-3xl font-black text-mustard mb-3`}>جودة مستحيل تلاقيها بره</h3>
+                                    <h3 className={`${zain.className} text-3xl font-black text-mustard mb-3`}>جودة مابتلاقيهاش بره</h3>
                                     <p className={`${zain.className} text-lg md:text-xl font-bold text-espresso/80 dark:text-cream/80`}>
                                         مكوناتنا بريميوم، اللحمة فريش والعيش مخبوز مخصوص ليك. لو دورت على الجودة دي في السوبر ماركت عشان تعملها بنفسك، هتكلفك أكتر بكتير.
                                     </p>
                                 </motion.div>
                             </div>
 
-                            {/* الأيقونة في النص */}
+                            {/* Icon in the middle */}
                             <div className="order-1 md:order-2 flex justify-end md:justify-center relative z-10 w-12 md:w-16 h-12 md:h-16">
                                 <div className="w-12 h-12 md:w-16 md:h-16 bg-mustard rounded-full border-4 border-cream dark:border-espresso flex items-center justify-center shadow-lg">
                                     <BadgeCheck className="w-6 h-6 md:w-8 md:h-8 text-espresso" />
                                 </div>
                             </div>
 
-                            {/* مساحة فاضية عشان نظبط بيها التصميم على الديسكتوب */}
+                            {/* Empty spacer to keep the desktop layout balanced */}
                             <div className="hidden md:block order-3"></div>
                         </div>
 
 
-                        {/* Feature 2 (فاضي يمين - أيكون في النص - كارت شمال) */}
+                        {/* Feature 2 (empty on the right - icon in the middle - card on the left) */}
                         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-8 items-center">
                             
                             <div className="hidden md:block order-1"></div>
@@ -85,7 +85,7 @@ function WhyChooseUs() {
                                 </div>
                             </div>
 
-                            <div className="order-2 md:order-3 ml-12 md:ml-0 md:text-right">
+                            <div className="order-2 md:order-3 mr-8 md:mr-0 md:text-right">
                                 <motion.div whileHover={{ scale: 1.03 }} className="bg-white/60 dark:bg-black/20 p-6 md:p-8 rounded-3xl border-2 border-mustard/20 shadow-sm relative">
                                     <h3 className={`${zain.className} text-3xl font-black text-mustard mb-3`}>وفر وقتك ومجهودك</h3>
                                     <p className={`${zain.className} text-lg md:text-xl font-bold text-espresso/80 dark:text-cream/80`}>
@@ -98,10 +98,10 @@ function WhyChooseUs() {
                         </div>
 
 
-                        {/* Feature 3 (كارت يمين - أيكون في النص - فاضي شمال) */}
+                        {/* Feature 3 (card on the right - icon in the middle - empty on the left) */}
                         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-8 items-center">
                             
-                            <div className="order-2 md:order-1 ml-12 md:ml-0 md:text-right">
+                            <div className="order-2 md:order-1 mr-8 md:mr-0 md:text-right">
                                 <motion.div whileHover={{ scale: 1.03 }} className="bg-white/60 dark:bg-black/20 p-6 md:p-8 rounded-3xl border-2 border-mustard/20 shadow-sm relative">
                                     <h3 className={`${zain.className} text-3xl font-black text-mustard mb-3`}>أنت الشيف المحترف</h3>
                                     <p className={`${zain.className} text-lg md:text-xl font-bold text-espresso/80 dark:text-cream/80`}>
@@ -119,7 +119,7 @@ function WhyChooseUs() {
                             <div className="hidden md:block order-3"></div>
                         </div>
 
-                        {/* Feature 4 الكارت الجديد (فاضي يمين - أيكون في النص - كارت شمال) */}
+                        {/* Feature 4 - the new card (empty on the right - icon in the middle - card on the left) */}
                         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-8 items-center">
                             
                             <div className="hidden md:block order-1"></div>
@@ -130,7 +130,7 @@ function WhyChooseUs() {
                                 </div>
                             </div>
 
-                            <div className="order-2 md:order-3 ml-12 md:ml-0 md:text-right">
+                            <div className="order-2 md:order-3 mr-8 md:mr-0 md:text-right">
                                 <motion.div whileHover={{ scale: 1.03 }} className="bg-white/60 dark:bg-black/20 p-6 md:p-8 rounded-3xl border-2 border-mustard/20 shadow-sm relative">
                                     <h3 className={`${zain.className} text-3xl font-black text-mustard mb-3`}> مفهوم جديد للبرجر </h3>
                                     <p className={`${zain.className} text-lg md:text-xl font-bold text-espresso/80 dark:text-cream/80`}>
@@ -167,7 +167,7 @@ function WhyChooseUs() {
                             <div className={`${zain.className} absolute -top-4 left-1/2 -translate-x-1/2 bg-mustard text-espresso font-black px-5 py-1.5 rounded-full text-sm md:text-base shadow-md flex items-center gap-2`}>
                                 <Sparkles className="w-4 h-4 md:w-5 md:h-5" /> الخيار الأذكى
                             </div>
-                            <h4 className={`${zain.className} text-3xl font-black text-center text-espresso dark:text-mustard mb-6 bg-mustard/30 py-3 rounded-full mt-2`}>
+                            <h4 className={`${montez.className} text-3xl font-semibold text-center text-espresso dark:text-mustard mb-6 bg-mustard/30 py-3 rounded-full mt-2`}>
                                 Tasty & Delicious
                             </h4>
                             <ul className={`${zain.className} space-y-5 text-lg md:text-xl font-black text-espresso dark:text-cream`}>

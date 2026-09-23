@@ -101,7 +101,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "grill-cordon-box-sandwich",
-            image: "/sandwiches/grill-cordon.png",
+            image: "/boxes/grilled-cordon-box.png",
             alt: "ساندوتش Grill Cordon Box",
         },
 
@@ -129,7 +129,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "fried-cordon-box-sandwich",
-            image: "/sandwiches/fried-cordon.png",
+            image: "/boxes/fried-cordon-box.png",
             alt: "ساندوتش Fried Cordon Box",
         },
 
@@ -157,7 +157,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "cordon-mix-box-sandwich",
-            image: "/sandwiches/mix-cordon.png",
+            image: "/boxes/mix-cordon-box.png",
             alt: "ساندوتش Cordon Mix Box",
         },
 
@@ -188,7 +188,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "bbq-box-sandwich",
-            image: "/sandwiches/bbq.png",
+            image: "/boxes/bbq-box.png",
             alt: "ساندوتش BBQ Box",
         },
 
@@ -217,7 +217,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "td-box-sandwich",
-            image: "/sandwiches/t&d.png",
+            image: "/boxes/T&D-box.png",
             alt: "ساندوتش T&D Box",
         },
 

@@ -500,7 +500,9 @@ export default function MenuSection() {
                                             fill
                                             priority
                                             sizes="500px"
-                                            className="object-contain"
+                                            className="object-contain pointer-events-none"
+                                            draggable= "false"
+                                            onContextMenu={(e)=> e.preventDefault()}
                                         />
 
                                     </div>
@@ -1234,7 +1236,7 @@ export default function MenuSection() {
                                 -mt-1
                             `}
                         >
-                            استلم أوردرك خلال 24 ساعة من تأكيد الطلب
+                            استلام الاوردر خلال 24 ساعة من تأكيد الطلب
                         </p>
 
                     </div>

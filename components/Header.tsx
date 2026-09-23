@@ -122,6 +122,13 @@ function Header() {
                             className="hover:text-mustard transition-colors w-full"
                         >
                             قصتنا
+                        </a>                        
+                        <a
+                            href="#whyChooseUs"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="hover:text-mustard transition-colors w-full"
+                        >
+                            لية تختارنا
                         </a>
 
                         {/* Dark / Light Mode Switcher - mobile only */}

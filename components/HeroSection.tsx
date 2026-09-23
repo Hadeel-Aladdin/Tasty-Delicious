@@ -55,7 +55,7 @@ function HeroSection() {
                                 cy="50"
                                 r="44"
                                 className="fill-cream/90 dark:fill-espresso/90 stroke-espresso dark:stroke-mustard"
-                                strokeWidth="2.5"
+                                strokeWidth="1.5"
                             />
 
                             {/* النجوم مائلة ومبعدة عن حافة الدائرة العلوية */}

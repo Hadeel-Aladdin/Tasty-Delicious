@@ -41,7 +41,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "volcano-box-sandwich",
-            image: "/sandwiches/volcano-beef.png",
+            image: "/boxes/volcano-box-image.png",
             alt: "ساندوتش Volcano Box",
         },
 
@@ -69,7 +69,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "matching-box-sandwich",
-            image: "/sandwiches/matching.png",
+            image: "/boxes/matching-box-image.png",
             alt: "ساندوتش Matching Box",
         },
 
@@ -96,7 +96,7 @@ export const boxes: Box[] = [
     {
         id: "grill-cordon-box",
         name: "Grill Cordon Box",
-        description: "اختيار غني لمحبي الطعم المشوي والجبنة والمكونات المميزة",
+        description: "اختيار غني لمحبي الطعم المشوي وصدور الدجاج المحشية بالخضار والجبنة بتوابل مميزة",
         price: 540,
 
         image: {
@@ -124,7 +124,7 @@ export const boxes: Box[] = [
     {
         id: "fried-cordon-box",
         name: "Fried Cordon Box",
-        description: "بوكس غني لعشاق الطعم المقرمش والنكهات الغنية",
+        description: "بوكس غني لعشاق الطعم المقرمش وصدور الدجاج المحشية بالخضار والجبنة بتوابل مميزة",
         price: 620,
 
         image: {
@@ -212,7 +212,7 @@ export const boxes: Box[] = [
     {
         id: "T&D box",
         name: "T&D Box",
-        description: "التجربة الكاملة من Tasty & Delicious، أفضل اختيار لتجربة أكثر من نوع في بوكس واحد",
+        description: "التجربة الكاملة من Tasty & Delicious، أفضل اختيار لتجربة كل الأنواع في بوكس واحد",
         price: 750,
 
         image: {

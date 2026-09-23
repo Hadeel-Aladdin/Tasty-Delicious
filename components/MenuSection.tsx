@@ -101,6 +101,10 @@ export default function MenuSection() {
     // Customer notes for the order
     const [orderNotes, setOrderNotes] = useState('');
 
+    // Tracks whether the user has actively picked a box,
+    // so the box image only locks in after a real selection
+    const [isSelectedBox, setIsSelectedBox] = useState<boolean>(false);
+
 
     /* =====================================================
         Quantity
@@ -173,6 +177,7 @@ export default function MenuSection() {
         setSelectedBox(box);
         setQuantity(1);
         setOrderNotes('');
+        setIsSelectedBox(true);
     };
 
 
@@ -182,7 +187,9 @@ export default function MenuSection() {
     ===================================================== */
 
     const BoxSelector = ({ box }: { box: Box }) => {
-        const isSelected = selectedBox.id === box.id;
+        // Only count as "selected" once the user has actually
+        // picked a box — otherwise nothing looks pre-chosen
+        const isSelected = isSelectedBox && selectedBox.id === box.id;
         const isVolcano = box.id === 'volcano-box';
         const isSpecial = box.id === 'T&D box';
 
@@ -190,13 +197,17 @@ export default function MenuSection() {
             .replace(/box|بوكس/gi, '')
             .trim();
 
-        const textColorClass = isVolcano
-            ? 'text-espresso'
-            : isSpecial && isSelected
+        // Single, longer names (like "Matching") don't have a
+        // natural line-break point — shrink them to fit on one line
+        const isSingleLongWord = !displayName.includes(' ') && displayName.length > 6;
+
+        // Every box shares the same light/dark colors, selected or not —
+        // only T&D gets a distinct, special treatment
+        const textColorClass = isSpecial
+            ? isSelected
                 ? 'text-cream'
-                : isSelected || isSpecial
-                    ? 'text-mustard'
-                    : 'text-espresso dark:text-cream';
+                : 'text-mustard'
+            : 'text-espresso';
 
 
         return (
@@ -206,8 +217,8 @@ export default function MenuSection() {
                 title={box.name}
                 className={`
                     relative
-                    w-11 h-11
-                    md:w-[54px] md:h-[54px]
+                    w-13 h-13
+                    md:w-[65px] md:h-[65px]
                     rounded-full
                     border-2
                     transition-all
@@ -221,21 +232,17 @@ export default function MenuSection() {
                     ${aref.className}
 
                     ${isSelected
-                        ? 'scale-110 shadow-md ring-2 ring-espresso/20 dark:ring-cream/20'
+                        ? 'scale-110 shadow-md ring-2 bg-white/60 dark:bg-peach ring-espresso/20 dark:ring-cream/20'
                         : 'hover:scale-105'
                     }
 
-                    ${isVolcano
+                    ${isSpecial
                         ? isSelected
+                            ? 'border-mustard bg-mustard'
+                            : 'border-mustard/60 bg-mustard/30'
+                        : isSelected
                             ? 'border-mustard bg-cream'
                             : 'border-mustard/40 bg-cream/20'
-                        : isSpecial
-                            ? isSelected
-                                ? 'border-mustard bg-mustard'
-                                : 'border-mustard/60 bg-mustard/30'
-                            : isSelected
-                                ? 'border-mustard bg-cream dark:bg-espresso/60'
-                                : 'border-mustard/40 bg-cream/20 dark:bg-cream/5'
                     }
                 `}
             >
@@ -244,12 +251,13 @@ export default function MenuSection() {
                     className={`
                         w-full
                         ${textColorClass}
+                        dark:text-mustard
                         font-bold
-                        text-[9px]
-                        md:text-[10px]
                         leading-[1.1]
-                        break-words
-                        hyphens-auto
+                        ${isSingleLongWord
+                            ? 'text-[10px] md:text-[12px] whitespace-nowrap'
+                            : 'text-[9px] md:text-[12px] break-words hyphens-auto'
+                        }
                     `}
                 >
                     {displayName}
@@ -272,12 +280,22 @@ export default function MenuSection() {
 
                 {/* T&D */}
                 {isSpecial && (
-                    <div className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-mustard flex items-center justify-center shadow-sm z-10">
+                    <motion.div
+                        animate={{
+                            y: [0, -3, 0],
+                        }}
+                        transition={{
+                            duration: 1.2,
+                            repeat: Infinity,
+                            ease: 'easeInOut',
+                        }}
+                        className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-mustard flex items-center justify-center shadow-sm z-10"
+                    >
                         <Crown
                             className="w-2.5 h-2.5 text-espresso"
                             fill="#553e2b"
                         />
-                    </div>
+                    </motion.div>
                 )}
 
             </button>
@@ -335,16 +353,18 @@ export default function MenuSection() {
                         <p>
                             كل بوكس فيه المكونات والصوصات اللي بتوفرلك تجربة مختلفة
                             عشان تعمل برجر على مزاجك،
-                            وكل اللي ناقصه هو التسوية بالطريقة اللي تحبها.
+                            كل اللي ناقصه هو التسوية بالطريقة اللي تحبها.
                         </p>
 
                         <p>
-                            ومكوناتك بتوصلك طازة ومحافظة على حرارتها،
-                            لأن كل بوكس بيجيلك جوّه
-                            <span className="font-bold text-espresso dark:text-cream/75 ml-1">
+                            مكوناتك بتوصلك طازة ومحافظة على حرارتها،
+                            لأن كل بوكس بيجيلك جوه
+                            <span className="font-bold text-mustard ml-1">
                                 {' '}Cooling Bag
                             </span>
-                             مخصوص يحافظ عليها لحد ما توصل لك.
+                             مخصوص يحافظ عليه لحد ما يوصل لك 
+                             <span className='text-mustard'> خلال 24 ساعة </span>
+                              عشان تبدأ تختار هتعمل كل ساندوتش ازاي بالصوصات اللي تنقيها والمخلل اللي تحبه.
                         </p>
                     </div>
 
@@ -367,8 +387,8 @@ export default function MenuSection() {
                     w-full min-h-[100dvh]
                     min-h-screen
                     lg:min-h-screen
-                    px-4
-                    md:px-10
+                    px-2
+                    md:px-6
                     py-6
                     lg:py-8
                 "
@@ -376,7 +396,7 @@ export default function MenuSection() {
 
                 <div
                     className="
-                        max-w-7xl
+                        max-w-[1440px]
                         w-full
                         mx-auto
                         grid
@@ -407,26 +427,73 @@ export default function MenuSection() {
                         "
                     >
 
-                        <AnimatePresence mode="wait">
+                        {isSelectedBox ? (
+                            <AnimatePresence mode="wait">
 
-                            <motion.div
-                                key={`${selectedBox.id}-stack`}
-                                initial={{
-                                    opacity: 0,
-                                    scale: 0.96,
-                                }}
-                                animate={{
-                                    opacity: 1,
-                                    scale: 1,
-                                }}
-                                exit={{
-                                    opacity: 0,
-                                    scale: 0.96,
-                                }}
-                                transition={{
-                                    duration: 0.32,
-                                    ease: 'easeInOut',
-                                }}
+                                <motion.div
+                                    key={`${selectedBox.id}-stack`}
+                                    initial={{
+                                        opacity: 0,
+                                        scale: 0.96,
+                                    }}
+                                    animate={{
+                                        opacity: 1,
+                                        scale: 1,
+                                    }}
+                                    exit={{
+                                        opacity: 0,
+                                        scale: 0.96,
+                                    }}
+                                    transition={{
+                                        duration: 0.32,
+                                        ease: 'easeInOut',
+                                    }}
+                                    className="
+                                        relative
+                                        w-full
+                                        max-w-[360px]
+                                        flex
+                                        flex-col
+                                        items-center
+                                        justify-center
+                                        py-4
+                                        md:py-6
+                                    "
+                                >
+
+                                    {/* Sandwich Image */}
+
+                                    <div
+                                        className="
+                                            relative
+                                            w-[300px]
+                                            h-[300px]
+                                            md:w-[450px]
+                                            md:h-[450px]
+                                        "
+                                        style={{
+                                            zIndex: 1,
+                                        }}
+                                    >
+
+                                        <Image
+                                            src={selectedBox.image.image}
+                                            alt={selectedBox.image.alt}
+                                            fill
+                                            priority
+                                            sizes="500px"
+                                            className="object-contain"
+                                        />
+
+                                    </div>
+
+                                </motion.div>
+
+                            </AnimatePresence>
+                        ) : (
+                            // Simple prompt shown until the user
+                            // actually picks a box — no image at all
+                            <div
                                 className="
                                     relative
                                     w-full
@@ -439,9 +506,6 @@ export default function MenuSection() {
                                     md:py-6
                                 "
                             >
-
-                                {/* Sandwich Image */}
-
                                 <div
                                     className="
                                         relative
@@ -449,26 +513,39 @@ export default function MenuSection() {
                                         h-[300px]
                                         md:w-[450px]
                                         md:h-[450px]
+                                        flex
+                                        flex-col
+                                        items-center
+                                        justify-center
+                                        gap-4
                                     "
-                                    style={{
-                                        zIndex: 1,
-                                    }}
                                 >
-
-                                    <Image
-                                        src={selectedBox.image.image}
-                                        alt={selectedBox.image.alt}
-                                        fill
-                                        priority
-                                        sizes="300px"
-                                        className="object-contain"
+                                    <ShoppingBag
+                                        className="
+                                            w-14 h-14
+                                            md:w-20 md:h-20
+                                            text-espresso/25
+                                            dark:text-cream/25
+                                        "
                                     />
 
+                                    <p
+                                        className={`
+                                            ${zain.className}
+                                            text-center
+                                            text-base
+                                            md:text-lg
+                                            font-bold
+                                            text-espresso/60
+                                            dark:text-cream/60
+                                            px-6
+                                        `}
+                                    >
+                                      اختار بوكس من القايمة
+                                    </p>
                                 </div>
-
-                            </motion.div>
-
-                        </AnimatePresence>
+                            </div>
+                        )}
 
 
                         {/* Under Burger */}
@@ -483,8 +560,8 @@ export default function MenuSection() {
                                 md:mt-4
                             `}
                         >
-                            <p className="text-lg md:text-xl font-bold">
-                                بمكونات طازجة وجودة عالية
+                            <p className="text-lg md:text-xl text-espresso/70 dark:text-cream/70 font-bold">
+                             البوكس للعرض فقط، الاكل بيجيلك في cooling bag
                             </p>
                         </div>
 
@@ -861,7 +938,7 @@ export default function MenuSection() {
                                     setOrderNotes(e.target.value)
                                 }
                                 rows={3}
-                                placeholder="أي ملاحظات زي: مش عايز هالوبينو، زوّد الصوص، أو أي حاجة تحب نعرفها ❤️"
+                                placeholder="مثلا: عايز استلمه الصبح أو معاد معين"
                                 className={`
                                     ${zain.className}
                                     w-full
@@ -1033,6 +1110,24 @@ export default function MenuSection() {
                             </a>
 
                         </div>
+
+
+                        {/* Delivery note */}
+
+                        <p
+                            className={`
+                                ${zain.className}
+                                text-center
+                                sm:text-right
+                                text-sm
+                                md:text-base
+                                text-espresso/60
+                                dark:text-cream/60
+                                -mt-1
+                            `}
+                        >
+                             استلم أوردرك خلال 24 ساعة من تأكيد الطلب
+                        </p>
 
                     </div>
 

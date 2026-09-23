@@ -89,7 +89,9 @@ function WhyChooseUs() {
                                 <motion.div whileHover={{ scale: 1.03 }} className="bg-white/60 dark:bg-black/20 p-6 md:p-8 rounded-3xl border-2 border-mustard/20 shadow-sm relative">
                                     <h3 className={`${zain.className} text-3xl font-black text-mustard mb-3`}>وفر وقتك ومجهودك</h3>
                                     <p className={`${zain.className} text-lg md:text-xl font-bold text-espresso/80 dark:text-cream/80`}>
-                                        بدل ما تلف تشتري مكونات وتحضر.. البوكس بيجيلك جاهز بمقادير موزونة بالميللي، كل اللي عليك تسوّي وتستمتع في دقايق.
+                                         بدل ما تلف تشتري مكونات وتحضر.. البوكس بيجيلك 
+                                        <span className='text-mustard font-extrabold'> خلال 24 ساعة </span>
+                                         جاهز بمقادير موزونة بالميللي، كل اللي عليك تسوّي وتستمتع في دقايق.
                                     </p>
                                 </motion.div>
                             </div>
@@ -150,13 +152,13 @@ function WhyChooseUs() {
                         {/* The Ordinary Way */}
                         <div className="bg-espresso/5 dark:bg-white/5 rounded-3xl p-6 md:p-8 border border-espresso/10 dark:border-white/10">
                             <h4 className={`${zain.className} text-2xl font-black text-center text-espresso/60 dark:text-cream/60 mb-6 bg-espresso/10 dark:bg-white/10 py-3 rounded-full`}>
-                                الأكل العادي / الديليفري
+                                الأكل العادي و الديليفري
                             </h4>
                             <ul className={`${zain.className} space-y-5 text-lg md:text-xl font-bold text-espresso/80 dark:text-cream/80`}>
-                                <li className="flex items-center gap-3"><XCircle className="w-6 h-6 text-red-500 shrink-0" /> وقت طويل في التحضير أو انتظار الطلب</li>
+                                <li className="flex items-center gap-3"><XCircle className="w-6 h-6 text-red-500 shrink-0" /> وقت ومجهود كبير في التحضير </li>
                                 <li className="flex items-center gap-3"><XCircle className="w-6 h-6 text-red-500 shrink-0" /> الديليفري بيوصل بارد أو العيش بايش</li>
-                                <li className="flex items-center gap-3"><XCircle className="w-6 h-6 text-red-500 shrink-0" /> تكلفة أعلى لو هتشتري المكونات بنفسك</li>
                                 <li className="flex items-center gap-3"><XCircle className="w-6 h-6 text-red-500 shrink-0" /> جودة اللحوم والمكونات غير مضمونة</li>
+                                <li className="flex items-center gap-3"><XCircle className="w-6 h-6 text-red-500 shrink-0" /> بنقبل صوصات او مكونات مابنحبهاش </li>
                             </ul>
                         </div>
 
@@ -169,10 +171,10 @@ function WhyChooseUs() {
                                 Tasty & Delicious
                             </h4>
                             <ul className={`${zain.className} space-y-5 text-lg md:text-xl font-black text-espresso dark:text-cream`}>
-                                <li className="flex items-center gap-3"><CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" /> مكونات جاهزة وموزونة بدقة</li>
-                                <li className="flex items-center gap-3"><CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" /> لحوم طازجة وجودة 100% مضمونة</li>
-                                <li className="flex items-center gap-3"><CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" /> أوفر وأسهل من عمايل البيت</li>
-                                <li className="flex items-center gap-3"><CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" /> أنت الشيف.. أكل سخن بمزاجك</li>
+                                <li className="flex items-center gap-3"><CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" /> أوفر و أسهل من تحضيرات البيت</li>
+                                <li className="flex items-center gap-3"><CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" /> الأكل بيوصلك محفوظ في cooling bag </li>
+                                <li className="flex items-center gap-3"><CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" /> لحوم طازجة وجودة مضمونة %100</li>
+                                <li className="flex items-center gap-3"><CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" /> انت الشيف بمكونات جاهزة وموزونة بدقة</li>
                             </ul>
                         </div>
                     </div>
@@ -191,10 +193,10 @@ function WhyChooseUs() {
                         <div className="hidden md:block absolute top-12 left-10 right-10 h-0.5 border-t-2 border-dashed border-mustard/40 z-0"></div>
 
                         {[
-                            { step: '01', icon: Store, title: 'اختار وجبتك', desc: 'نقّي البوكس اللي يعجبك من المينيو' },
-                            { step: '02', icon: Truck, title: 'هنوصلك بسرعة', desc: 'مكوناتك هتوصلك فريش لحد الباب' },
-                            { step: '03', icon: Utensils, title: 'سوّيها بمزاجك', desc: 'في دقايق معدودة بطريقتك المفضلة' },
-                            { step: '04', icon: ShoppingBag, title: 'استمتع بالطعم', desc: 'أحلى برجر مطاعم من عمايل إيديك' }
+                            { step: '01', icon: Store, title: 'اختار وجبتك', desc: 'نقي البوكس اللي يعجبك من المينيو' },
+                            { step: '02', icon: Truck, title: 'هنوصلك بسرعة', desc: 'البوكس هيوصلك فريش لحد الباب خلال 24 ساعة' },
+                            { step: '03', icon: Utensils, title: 'حضرها بمزاجك', desc: 'في دقايق معدودة بطريقتك المفضلة' },
+                            { step: '04', icon: ShoppingBag, title: 'استمتع بالطعم', desc: 'جودة المطاعم بمكونات من اختيارك انت' }
                         ].map((item, idx) => (
                             <div key={idx} className="relative z-10 flex flex-col items-center">
                                 <div className="w-24 h-24 rounded-full bg-cream dark:bg-espresso border-2 border-mustard flex items-center justify-center mb-5 relative shadow-md">

@@ -90,6 +90,24 @@ function getIngredientIcon(item: string) {
 
 
 /* =====================================================
+    Sanitize order notes
+===================================================== */
+
+const MAX_NOTES_LENGTH = 250;
+
+function sanitizeNotes(value: string): string {
+    return value
+        // strip links (http://, https://, www.)
+        .replace(/(https?:\/\/|www\.)\S+/gi, '')
+        // strip anything that looks like an HTML/script tag
+        .replace(/<[^>]*>/g, '')
+        // collapse repeated whitespace/newlines from pasted text
+        .replace(/\s{2,}/g, ' ')
+        .slice(0, MAX_NOTES_LENGTH);
+}
+
+
+/* =====================================================
     Menu Section
 ===================================================== */
 
@@ -362,9 +380,9 @@ export default function MenuSection() {
                             <span className="font-bold text-mustard ml-1">
                                 {' '}Cooling Bag
                             </span>
-                             مخصوص يحافظ عليه لحد ما يوصل لك 
-                             <span className='text-mustard'> خلال 24 ساعة </span>
-                              عشان تبدأ تختار هتعمل كل ساندوتش ازاي بالصوصات اللي تنقيها والمخلل اللي تحبه.
+                            مخصوص يحافظ عليه لحد ما يوصل لك
+                            <span className='text-mustard'> خلال 24 ساعة </span>
+                            عشان تبدأ تختار هتعمل كل ساندوتش ازاي بالصوصات اللي تنقيها والمخلل اللي تحبه.
                         </p>
                     </div>
 
@@ -541,7 +559,7 @@ export default function MenuSection() {
                                             px-6
                                         `}
                                     >
-                                      اختار بوكس من القايمة
+                                        اختار بوكس من القايمة
                                     </p>
                                 </div>
                             </div>
@@ -560,8 +578,8 @@ export default function MenuSection() {
                                 md:mt-4
                             `}
                         >
-                            <p className="text-md md:text-xl text-espresso/70 dark:text-cream/70 font-bold">
-                             البوكس للعرض فقط، الاكل بيجيلك في cooling bag
+                            <p className="text-md md:text-lg text-espresso/70 dark:text-cream/70 font-bold">
+                                البوكس للعرض فقط، الاكل بيجيلك في cooling bag
                             </p>
                         </div>
 
@@ -988,8 +1006,9 @@ export default function MenuSection() {
                                 id="order-notes"
                                 value={orderNotes}
                                 onChange={(e) =>
-                                    setOrderNotes(e.target.value)
+                                    setOrderNotes(sanitizeNotes(e.target.value))
                                 }
+                                maxLength={MAX_NOTES_LENGTH}
                                 rows={3}
                                 placeholder="مثلا: عايز استلمه الصبح أو معاد معين"
                                 className={`
@@ -1215,7 +1234,7 @@ export default function MenuSection() {
                                 -mt-1
                             `}
                         >
-                             استلم أوردرك خلال 24 ساعة من تأكيد الطلب
+                            استلم أوردرك خلال 24 ساعة من تأكيد الطلب
                         </p>
 
                     </div>

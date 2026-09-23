@@ -13,7 +13,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "classic-box-sandwich",
-            image: "/boxes/classic-box-image.png",
+            image: "/boxes/classic-box.png",
             alt: "ساندوتش Classic Box",
         },
 
@@ -41,7 +41,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "volcano-box-sandwich",
-            image: "/boxes/volcano-box-image.png",
+            image: "/boxes/volcano-box.png",
             alt: "ساندوتش Volcano Box",
         },
 
@@ -69,7 +69,7 @@ export const boxes: Box[] = [
 
         image: {
             id: "matching-box-sandwich",
-            image: "/boxes/matching-box-image.png",
+            image: "/boxes/matching-box.png",
             alt: "ساندوتش Matching Box",
         },
 

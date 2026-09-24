@@ -23,7 +23,7 @@ const zain = Zain({ weight: ['400', '700', '800', '900'], subsets: ['arabic'] })
 
 function WhyChooseUs() {
     return (
-        <section dir="rtl" id='whyChooseUs' className="relative w-full pt-20 bg-cream dark:bg-espresso overflow-hidden">
+        <section dir="rtl" id='whyChooseUs' className="relative w-full scroll-mt-15 bg-cream dark:bg-espresso overflow-hidden">
 
             <div className="max-w-6xl mx-auto px-5 py-12 md:py-20">
                 

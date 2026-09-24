@@ -537,7 +537,7 @@ export default function MenuSection() {
                         grid
                         grid-cols-1
                         lg:grid-cols-12
-                        gap-8
+                        gap-6
                         lg:gap-10
                         items-center
                     "
@@ -550,7 +550,7 @@ export default function MenuSection() {
 
                     <div
                         className="
-                            order-1
+                            order-2
                             lg:order-2
                             lg:col-span-5
                             flex
@@ -709,16 +709,24 @@ export default function MenuSection() {
                         Box Information
                     ===================================================== */}
 
+                    {/* 
+                        Mobile / tablet: this wrapper uses `display: contents`, so its children
+                        become direct grid items and are ordered with the `order-*` classes:
+                        1 selectors, 2 photo, 3 title + description + contents,
+                        4 add to order, 5 order summary, 6 notes, 7 order button, 8 delivery note.
+                        Desktop (lg+): a normal flex column, DOM order is kept (`lg:order-none`).
+                    */}
+
                     <div
                         className="
-                            order-2
+                            contents
+                            lg:flex
                             lg:order-1
                             lg:col-span-7
-                            flex
-                            flex-col
-                            justify-between
+                            lg:flex-col
+                            lg:justify-between
                             h-auto
-                            space-y-6
+                            lg:space-y-6
                             w-full
                         "
                     >
@@ -744,7 +752,7 @@ export default function MenuSection() {
                                         duration: 0.28,
                                         ease: 'easeInOut',
                                     }}
-                                    className="space-y-3"
+                                    className="space-y-3 order-3 lg:order-none"
                                 >
 
                                     {/* Box Title */}
@@ -851,9 +859,9 @@ export default function MenuSection() {
                                     <div
                                         className="
                                             grid
-                                            grid-cols-1
-                                            sm:grid-cols-2
-                                            gap-2.5
+                                            grid-cols-2
+                                            gap-2
+                                            sm:gap-2.5
                                             pt-1
                                         "
                                     >
@@ -871,7 +879,8 @@ export default function MenuSection() {
                                                         gap-2
                                                         bg-[#edd0b9]/40
                                                         dark:bg-cream/5
-                                                        px-3.5
+                                                        px-2.5
+                                                        sm:px-3.5
                                                         py-2
                                                         rounded-xl
                                                         border
@@ -881,7 +890,7 @@ export default function MenuSection() {
                                                     "
                                                 >
 
-                                                    <div className="relative w-6 h-6 shrink-0">
+                                                    <div className="relative w-5 h-5 sm:w-6 sm:h-6 shrink-0">
                                                         <Image
                                                             src={iconPath}
                                                             alt={item}
@@ -894,7 +903,8 @@ export default function MenuSection() {
                                                     <span
                                                         className={`
                                                             ${zain.className}
-                                                            text-base
+                                                            text-sm
+                                                            sm:text-base
                                                             md:text-lg
                                                             font-bold
                                                             text-espresso
@@ -933,7 +943,7 @@ export default function MenuSection() {
                                         duration: 0.28,
                                         ease: 'easeInOut',
                                     }}
-                                    className="space-y-3"
+                                    className="space-y-3 order-3 lg:order-none"
                                 >
 
                                     <h2
@@ -974,6 +984,8 @@ export default function MenuSection() {
 
                         <div
                             className="
+                                order-1
+                                lg:order-none
                                 flex
                                 items-center
                                 gap-3
@@ -1106,6 +1118,8 @@ export default function MenuSection() {
 
                         <div
                             className="
+                                order-4
+                                lg:order-none
                                 flex
                                 flex-col
                                 sm:flex-row
@@ -1277,7 +1291,7 @@ export default function MenuSection() {
                                         duration: 0.25,
                                         ease: 'easeInOut',
                                     }}
-                                    className="overflow-hidden"
+                                    className="overflow-hidden order-5 lg:order-none"
                                 >
 
                                     <div
@@ -1508,7 +1522,7 @@ export default function MenuSection() {
                             Order Notes
                         ===================================================== */}
 
-                        <div className="w-full">
+                        <div className="w-full order-6 lg:order-none">
 
                             <label
                                 htmlFor="order-notes"
@@ -1533,7 +1547,7 @@ export default function MenuSection() {
                                 }
                                 maxLength={MAX_NOTES_LENGTH}
                                 rows={3}
-                                placeholder="مثلا: عايز استلمه الصبح أو معاد معين"
+                                placeholder="لو حابب تختار معاد تسليم معين، او تضيف حاجة"
                                 className={`
                                     ${zain.className}
                                     w-full
@@ -1590,6 +1604,8 @@ export default function MenuSection() {
                                     text-lg
                                     md:text-xl
                                     w-full
+                                    order-7
+                                    lg:order-none
                                     transition-all
                                     duration-200
                                     hover:scale-[1.01]
@@ -1626,6 +1642,8 @@ export default function MenuSection() {
                                     text-lg
                                     md:text-xl
                                     w-full
+                                    order-7
+                                    lg:order-none
                                 `}
                             >
 
@@ -1649,6 +1667,8 @@ export default function MenuSection() {
                                 text-espresso/60
                                 dark:text-cream/60
                                 -mt-1
+                                order-8
+                                lg:order-none
                             `}
                         >
                             استلام الاوردر خلال 24 ساعة من تأكيد الطلب

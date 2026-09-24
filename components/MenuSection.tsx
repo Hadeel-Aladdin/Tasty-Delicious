@@ -498,7 +498,7 @@ export default function MenuSection() {
                                 {' '}Cooling Bag
                             </span>
                             مخصوص يحافظ عليه لحد ما يوصل لك
-                            <span className='text-mustard'> خلال 24 ساعة </span>
+                            {/* <span className='text-mustard'> خلال 24 ساعة </span> */}
                             عشان تبدأ تختار هتعمل كل ساندوتش ازاي بالصوصات اللي تنقيها والمخلل اللي تحبه.
                         </p>
                     </div>
@@ -1547,7 +1547,7 @@ export default function MenuSection() {
                                 }
                                 maxLength={MAX_NOTES_LENGTH}
                                 rows={3}
-                                placeholder="لو حابب تختار معاد تسليم معين، او تضيف حاجة"
+                                placeholder="لو حابب تختار معاد تسليم معين، او تضيف حاجة على الاوردر"
                                 className={`
                                     ${zain.className}
                                     w-full

@@ -497,9 +497,7 @@ export default function MenuSection() {
                             <span className="font-bold text-mustard ml-1">
                                 {' '}Cooling Bag
                             </span>
-                            مخصوص يحافظ عليه لحد ما يوصل لك
-                            {/* <span className='text-mustard'> خلال 24 ساعة </span> */}
-                            عشان تبدأ تختار هتعمل كل ساندوتش ازاي بالصوصات اللي تنقيها والمخلل اللي تحبه.
+                            مخصوص يحافظ عليه لحد ما يوصل لك عشان تبدأ تختار هتعمل كل ساندوتش ازاي بالصوصات اللي تنقيها والمخلل اللي تحبه.
                         </p>
                     </div>
 

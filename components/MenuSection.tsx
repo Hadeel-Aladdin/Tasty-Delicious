@@ -8,6 +8,7 @@ import {
     Plus,
     Minus,
     ShoppingBag,
+    Trash2,
 } from 'lucide-react';
 
 import { Aref_Ruqaa, Zain } from 'next/font/google';
@@ -108,13 +109,27 @@ function sanitizeNotes(value: string): string {
 
 
 /* =====================================================
+    Order types
+===================================================== */
+
+type CartLine = {
+    id: string;
+    quantity: number;
+};
+
+
+/* =====================================================
     Menu Section
 ===================================================== */
 
 export default function MenuSection() {
 
     const [selectedBox, setSelectedBox] = useState<Box>(boxes[0]);
+    // Quantity for the box currently being viewed (before adding it to the order)
     const [quantity, setQuantity] = useState<number>(1);
+
+    // The order: every box the customer has added, with its own quantity
+    const [cart, setCart] = useState<CartLine[]>([]);
 
     // Customer notes for the order
     const [orderNotes, setOrderNotes] = useState('');
@@ -136,6 +151,48 @@ export default function MenuSection() {
         if (type === 'inc') {
             setQuantity((prev) => prev + 1);
         }
+    };
+
+
+    /* =====================================================
+        Order (cart) handlers
+    ===================================================== */
+
+    // Adds the selected box with the chosen quantity.
+    // If the box is already in the order, its quantity is increased.
+    const addToCart = () => {
+        if (!isSelectedBox) return;
+
+        setCart((prev) => {
+            const existing = prev.find((line) => line.id === selectedBox.id);
+
+            if (existing) {
+                return prev.map((line) =>
+                    line.id === selectedBox.id
+                        ? { ...line, quantity: line.quantity + quantity }
+                        : line
+                );
+            }
+
+            return [...prev, { id: selectedBox.id, quantity }];
+        });
+
+        // Ready to pick the next box
+        setQuantity(1);
+    };
+
+    const updateCartQuantity = (id: string, delta: 1 | -1) => {
+        setCart((prev) =>
+            prev.map((line) =>
+                line.id === id
+                    ? { ...line, quantity: Math.max(1, line.quantity + delta) }
+                    : line
+            )
+        );
+    };
+
+    const removeFromCart = (id: string) => {
+        setCart((prev) => prev.filter((line) => line.id !== id));
     };
 
 
@@ -175,15 +232,36 @@ export default function MenuSection() {
 
 
     /* =====================================================
+        Order summary (resolved from the cart)
+    ===================================================== */
+
+    const cartItems = cart
+        .map((line) => {
+            const box = boxes.find((b) => b.id === line.id);
+            return box ? { box, quantity: line.quantity } : null;
+        })
+        .filter((item): item is { box: Box; quantity: number } => item !== null);
+
+    const cartTotal = cartItems.reduce(
+        (sum, item) => sum + item.box.price * item.quantity,
+        0
+    );
+
+
+    /* =====================================================
         WhatsApp order message
     ===================================================== */
 
     const whatsappText = encodeURIComponent(
-        `أهلاً، عايز أطلب أوردر:
-        - ${selectedBox.name}
-        - العدد: ${quantity}
-        - الإجمالي: ${selectedBox.price * quantity} ج.م
-        - ملاحظات: ${orderNotes.trim() || 'لا توجد ملاحظات'}`
+        [
+            'أهلاً، عايز أطلب أوردر:',
+            ...cartItems.map(
+                (item) =>
+                    `- ${item.box.name} (العدد: ${item.quantity}) = ${item.box.price * item.quantity} ج.م`
+            ),
+            `- الإجمالي: ${cartTotal} ج.م`,
+            `- ملاحظات: ${orderNotes.trim() || 'لا توجد ملاحظات'}`,
+        ].join('\n')
     );
 
 
@@ -194,7 +272,6 @@ export default function MenuSection() {
     const selectBox = (box: Box) => {
         setSelectedBox(box);
         setQuantity(1);
-        setOrderNotes('');
         setIsSelectedBox(true);
     };
 
@@ -210,6 +287,9 @@ export default function MenuSection() {
         const isSelected = isSelectedBox && selectedBox.id === box.id;
         const isVolcano = box.id === 'volcano-box';
         const isSpecial = box.id === 'T&D box';
+
+        // How many of this box are already in the order
+        const cartQty = cart.find((line) => line.id === box.id)?.quantity ?? 0;
 
         const displayName = box.name
             .replace(/box|بوكس/gi, '')
@@ -314,6 +394,39 @@ export default function MenuSection() {
                             fill="#553e2b"
                         />
                     </motion.div>
+                )}
+
+
+                {/* Count of this box already in the order */}
+                {cartQty > 0 && (
+                    <span
+                        className={`
+                            ${zain.className}
+                            absolute
+                            -bottom-1
+                            -right-1
+                            min-w-5
+                            h-5
+                            px-1
+                            rounded-full
+                            bg-espresso
+                            text-cream
+                            dark:bg-mustard
+                            dark:text-espresso
+                            text-[11px]
+                            font-black
+                            flex
+                            items-center
+                            justify-center
+                            border-2
+                            border-cream
+                            dark:border-espresso
+                            shadow-sm
+                            z-10
+                        `}
+                    >
+                        {cartQty}
+                    </span>
                 )}
 
             </button>
@@ -984,66 +1097,7 @@ export default function MenuSection() {
 
 
                         {/* =====================================================
-                            Order Notes
-                        ===================================================== */}
-
-                        <div className="w-full">
-
-                            <label
-                                htmlFor="order-notes"
-                                className={`
-                                    ${zain.className}
-                                    block
-                                    text-lg
-                                    font-bold
-                                    text-espresso
-                                    dark:text-cream
-                                    mb-2
-                                `}
-                            >
-                                عندك أي ملاحظات على الأوردر؟
-                            </label>
-
-                            <textarea
-                                id="order-notes"
-                                value={orderNotes}
-                                onChange={(e) =>
-                                    setOrderNotes(sanitizeNotes(e.target.value))
-                                }
-                                maxLength={MAX_NOTES_LENGTH}
-                                rows={3}
-                                placeholder="مثلا: عايز استلمه الصبح أو معاد معين"
-                                className={`
-                                    ${zain.className}
-                                    w-full
-                                    resize-none
-                                    rounded-2xl
-                                    border
-                                    border-espresso/10
-                                    dark:border-cream/10
-                                    bg-[#edd0b9]/30
-                                    dark:bg-cream/5
-                                    px-4
-                                    py-3
-                                    text-base
-                                    md:text-lg
-                                    text-espresso
-                                    dark:text-cream
-                                    placeholder:text-espresso/45
-                                    dark:placeholder:text-cream/45
-                                    outline-none
-                                    focus:border-mustard
-                                    focus:ring-2
-                                    focus:ring-mustard/20
-                                    transition-all
-                                `}
-                            />
-
-                        </div>
-
-
-                        {/* =====================================================
-                            Quantity + Order
+                            Add to order (quantity + add button)
                         ===================================================== */}
 
                         <div
@@ -1058,7 +1112,7 @@ export default function MenuSection() {
                             "
                         >
 
-                            {/* Quantity */}
+                            {/* Quantity of the selected box */}
 
                             <div
                                 className={`
@@ -1146,80 +1200,441 @@ export default function MenuSection() {
                             </div>
 
 
-                            {/* WhatsApp */}
+                            {/* Add to order */}
 
-                            {isSelectedBox ? (
-                                <a
-                                    href={`https://wa.me/201228134545?text=${whatsappText}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`
-                                        flex
-                                        items-center
-                                        justify-center
-                                        gap-2
-                                        bg-mustard
-                                        hover:bg-[#d99f3b]
-                                        text-espresso
-                                        px-6
-                                        sm:px-8
-                                        py-3
-                                        rounded-full
-                                        font-bold
-                                        shadow-md
-                                        ${zain.className}
-                                        text-lg
-                                        md:text-xl
-                                        flex-1
-                                        transition-all
-                                        duration-200
-                                        hover:scale-[1.01]
-                                    `}
-                                >
+                            <button
+                                type="button"
+                                onClick={addToCart}
+                                disabled={!isSelectedBox}
+                                className={`
+                                    flex
+                                    items-center
+                                    justify-center
+                                    gap-2
+                                    border-2
+                                    border-mustard
+                                    text-espresso
+                                    dark:text-cream
+                                    px-6
+                                    sm:px-8
+                                    py-3
+                                    rounded-full
+                                    font-bold
+                                    ${zain.className}
+                                    text-lg
+                                    md:text-xl
+                                    flex-1
+                                    transition-all
+                                    duration-200
+                                    ${isSelectedBox
+                                        ? 'hover:bg-mustard/20 active:scale-[0.99]'
+                                        : 'opacity-50 cursor-not-allowed'
+                                    }
+                                `}
+                            >
 
-                                    <ShoppingBag className="w-5 h-5" />
+                                {/* <Plus className="w-5 h-5" /> */}
 
-                                    <span>
-                                        اطلب الآن
-                                    </span>
+                                <span>
+                                    {isSelectedBox ? 'ضيف للأوردر' : 'اختار بوكس الأول'}
+                                </span>
 
+                                {isSelectedBox && (
                                     <span className="text-base opacity-85">
                                         ({selectedBox.price * quantity} ج.م)
                                     </span>
+                                )}
 
-                                </a>
-                            ) : (
-                                <button
-                                    type="button"
-                                    disabled
-                                    className={`
-                                        flex
-                                        items-center
-                                        justify-center
-                                        gap-2
-                                        bg-mustard/40
-                                        text-espresso/60
-                                        px-6
-                                        sm:px-8
-                                        py-3
-                                        rounded-full
-                                        font-bold
-                                        cursor-not-allowed
-                                        ${zain.className}
-                                        text-lg
-                                        md:text-xl
-                                        flex-1
-                                    `}
-                                >
-
-                                    <span>
-                                        هيظهر السعر بعد الاختيار
-                                    </span>
-
-                                </button>
-                            )}
+                            </button>
 
                         </div>
+
+
+                        {/* =====================================================
+                            Order Summary (every box added so far)
+                        ===================================================== */}
+
+                        <AnimatePresence initial={false}>
+
+                            {cartItems.length > 0 && (
+                                <motion.div
+                                    key="order-summary"
+                                    initial={{
+                                        opacity: 0,
+                                        height: 0,
+                                    }}
+                                    animate={{
+                                        opacity: 1,
+                                        height: 'auto',
+                                    }}
+                                    exit={{
+                                        opacity: 0,
+                                        height: 0,
+                                    }}
+                                    transition={{
+                                        duration: 0.25,
+                                        ease: 'easeInOut',
+                                    }}
+                                    className="overflow-hidden"
+                                >
+
+                                    <div
+                                        className="
+                                            bg-[#edd0b9]/20
+                                            dark:bg-cream/5
+                                            rounded-2xl
+                                            border
+                                            border-espresso/5
+                                            dark:border-cream/10
+                                            p-3
+                                            md:p-4
+                                        "
+                                    >
+
+                                        <h3
+                                            className={`
+                                                ${zain.className}
+                                                text-lg
+                                                md:text-xl
+                                                font-bold
+                                                text-espresso
+                                                dark:text-cream
+                                                mb-1
+                                            `}
+                                        >
+                                            أوردرك
+                                        </h3>
+
+
+                                        <ul className="divide-y divide-espresso/10 dark:divide-cream/10">
+
+                                            {cartItems.map(({ box, quantity: lineQuantity }) => (
+                                                <li
+                                                    key={box.id}
+                                                    className="flex items-center gap-2 sm:gap-3 py-2.5"
+                                                >
+
+                                                    {/* Name + unit price */}
+
+                                                    <div className="flex-1 min-w-0">
+                                                        <p
+                                                            className={`
+                                                                ${zain.className}
+                                                                text-base
+                                                                md:text-lg
+                                                                font-bold
+                                                                leading-tight
+                                                                text-espresso
+                                                                dark:text-cream
+                                                            `}
+                                                        >
+                                                            {box.name}
+                                                        </p>
+
+                                                        <p
+                                                            className={`
+                                                                ${zain.className}
+                                                                text-sm
+                                                                text-espresso/60
+                                                                dark:text-cream/60
+                                                            `}
+                                                        >
+                                                            {box.price} ج.م للبوكس
+                                                        </p>
+                                                    </div>
+
+
+                                                    {/* Line quantity */}
+
+                                                    <div className="flex items-center bg-mustard text-espresso rounded-full p-0.5 shrink-0">
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => updateCartQuantity(box.id, 1)}
+                                                            aria-label={`زيادة كمية ${box.name}`}
+                                                            className="
+                                                                w-8
+                                                                h-8
+                                                                rounded-full
+                                                                bg-white/60
+                                                                hover:bg-white
+                                                                flex
+                                                                items-center
+                                                                justify-center
+                                                                transition-colors
+                                                                duration-200
+                                                            "
+                                                        >
+                                                            <Plus className="w-3.5 h-3.5 text-espresso" />
+                                                        </button>
+
+                                                        <span
+                                                            className={`
+                                                                ${zain.className}
+                                                                text-lg
+                                                                font-black
+                                                                px-3
+                                                            `}
+                                                        >
+                                                            {lineQuantity}
+                                                        </span>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => updateCartQuantity(box.id, -1)}
+                                                            disabled={lineQuantity <= 1}
+                                                            aria-label={`تقليل كمية ${box.name}`}
+                                                            className="
+                                                                w-8
+                                                                h-8
+                                                                rounded-full
+                                                                bg-white/60
+                                                                hover:bg-white
+                                                                flex
+                                                                items-center
+                                                                justify-center
+                                                                transition-colors
+                                                                duration-200
+                                                                disabled:opacity-40
+                                                                disabled:cursor-not-allowed
+                                                                disabled:hover:bg-white/60
+                                                            "
+                                                        >
+                                                            <Minus className="w-3.5 h-3.5 text-espresso" />
+                                                        </button>
+
+                                                    </div>
+
+
+                                                    {/* Line total */}
+
+                                                    <span
+                                                        className={`
+                                                            ${zain.className}
+                                                            text-base
+                                                            md:text-lg
+                                                            font-bold
+                                                            text-espresso
+                                                            dark:text-cream
+                                                            min-w-[4.5rem]
+                                                            text-center
+                                                        `}
+                                                    >
+                                                        {box.price * lineQuantity} ج.م
+                                                    </span>
+
+
+                                                    {/* Remove from order */}
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeFromCart(box.id)}
+                                                        aria-label={`حذف ${box.name} من الأوردر`}
+                                                        className="
+                                                            w-8
+                                                            h-8
+                                                            shrink-0
+                                                            rounded-full
+                                                            flex
+                                                            items-center
+                                                            justify-center
+                                                            text-espresso/60
+                                                            dark:text-cream/60
+                                                            hover:text-red-500
+                                                            hover:bg-red-500/10
+                                                            transition-colors
+                                                            duration-200
+                                                        "
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+
+                                                </li>
+                                            ))}
+
+                                        </ul>
+
+
+                                        {/* Order total */}
+
+                                        <div
+                                            className="
+                                                flex
+                                                items-center
+                                                justify-between
+                                                pt-3
+                                                mt-1
+                                                border-t
+                                                border-espresso/10
+                                                dark:border-cream/10
+                                            "
+                                        >
+                                            <span
+                                                className={`
+                                                    ${zain.className}
+                                                    text-lg
+                                                    font-bold
+                                                    text-espresso
+                                                    dark:text-cream
+                                                `}
+                                            >
+                                                الإجمالي
+                                            </span>
+
+                                            <span
+                                                className={`
+                                                    ${zain.className}
+                                                    text-xl
+                                                    font-black
+                                                    text-espresso
+                                                    dark:text-cream
+                                                `}
+                                            >
+                                                {cartTotal} ج.م
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                </motion.div>
+                            )}
+
+                        </AnimatePresence>
+
+
+                        {/* =====================================================
+                            Order Notes
+                        ===================================================== */}
+
+                        <div className="w-full">
+
+                            <label
+                                htmlFor="order-notes"
+                                className={`
+                                    ${zain.className}
+                                    block
+                                    text-lg
+                                    font-bold
+                                    text-espresso
+                                    dark:text-cream
+                                    mb-2
+                                `}
+                            >
+                                عندك أي ملاحظات على الأوردر؟
+                            </label>
+
+                            <textarea
+                                id="order-notes"
+                                value={orderNotes}
+                                onChange={(e) =>
+                                    setOrderNotes(sanitizeNotes(e.target.value))
+                                }
+                                maxLength={MAX_NOTES_LENGTH}
+                                rows={3}
+                                placeholder="مثلا: عايز استلمه الصبح أو معاد معين"
+                                className={`
+                                    ${zain.className}
+                                    w-full
+                                    resize-none
+                                    rounded-2xl
+                                    border
+                                    border-espresso/10
+                                    dark:border-cream/10
+                                    bg-[#edd0b9]/30
+                                    dark:bg-cream/5
+                                    px-4
+                                    py-3
+                                    text-base
+                                    md:text-lg
+                                    text-espresso
+                                    dark:text-cream
+                                    placeholder:text-espresso/45
+                                    dark:placeholder:text-cream/45
+                                    outline-none
+                                    focus:border-mustard
+                                    focus:ring-2
+                                    focus:ring-mustard/20
+                                    transition-all
+                                `}
+                            />
+
+                        </div>
+
+
+                        {/* =====================================================
+                            Send the whole order on WhatsApp
+                        ===================================================== */}
+
+                        {cartItems.length > 0 ? (
+                            <a
+                                href={`https://wa.me/201228134545?text=${whatsappText}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`
+                                    flex
+                                    items-center
+                                    justify-center
+                                    gap-2
+                                    bg-mustard
+                                    hover:bg-[#d99f3b]
+                                    text-espresso
+                                    px-6
+                                    sm:px-8
+                                    py-3
+                                    rounded-full
+                                    font-bold
+                                    shadow-md
+                                    ${zain.className}
+                                    text-lg
+                                    md:text-xl
+                                    w-full
+                                    transition-all
+                                    duration-200
+                                    hover:scale-[1.01]
+                                `}
+                            >
+
+                                {/* <ShoppingBag className="w-5 h-5" /> */}
+
+                                <span>
+                                    اطلب الآن
+                                </span>
+
+                                <span className="text-base opacity-85">
+                                    ({cartTotal} ج.م)
+                                </span>
+
+                            </a>
+                        ) : (
+                            <button
+                                type="button"
+                                disabled
+                                className={`
+                                    flex
+                                    items-center
+                                    justify-center
+                                    gap-2
+                                    bg-mustard/40
+                                    text-espresso/60
+                                    px-6
+                                    sm:px-8
+                                    py-3
+                                    rounded-full
+                                    font-bold
+                                    cursor-not-allowed
+                                    ${zain.className}
+                                    text-lg
+                                    md:text-xl
+                                    w-full
+                                `}
+                            >
+
+                                <span>
+                                    ضيف بوكس للأوردر الأول
+                                </span>
+
+                            </button>
+                        )}
 
 
                         {/* Delivery note */}

@@ -299,11 +299,15 @@ export default function MenuSection() {
         // natural line-break point — shrink them to fit on one line
         const isSingleLongWord = !displayName.includes(' ') && displayName.length > 6;
 
+        // Very long single words (like "Matching") need an even smaller mobile size
+        // so they stay inside the circle
+        const isExtraLongWord = isSingleLongWord && displayName.length > 7;
+
         // Every box shares the same light/dark colors, selected or not —
         // only T&D gets a distinct, special treatment
         const textColorClass = isSpecial
             ? isSelected
-                ? 'text-cream'
+                ? 'text-espresso'
                 : 'text-mustard'
             : 'text-espresso';
 
@@ -330,16 +334,16 @@ export default function MenuSection() {
                     ${aref.className}
 
                     ${isSelected
-                        ? 'scale-110 shadow-md ring-2 bg-white/60 dark:bg-peach ring-espresso/20 dark:ring-cream/20'
+                        ? 'scale-110 shadow-md ring-2 ring-espresso/20 dark:ring-cream/20'
                         : 'hover:scale-105'
                     }
 
                     ${isSpecial
                         ? isSelected
-                            ? 'border-mustard bg-mustard'
+                            ? 'border-mustard bg-mustard dark:bg-peach'
                             : 'border-mustard/60 bg-mustard/30'
                         : isSelected
-                            ? 'border-mustard bg-cream'
+                            ? 'border-mustard bg-cream bg-white/60 dark:bg-peach'
                             : 'border-mustard/40 bg-cream/20'
                     }
                 `}
@@ -353,7 +357,7 @@ export default function MenuSection() {
                         font-bold
                         leading-[1.1]
                         ${isSingleLongWord
-                            ? 'text-[10px] md:text-[12px] whitespace-nowrap'
+                            ? `${isExtraLongWord ? 'text-[8px]' : 'text-[10px]'} md:text-[12px] whitespace-nowrap`
                             : 'text-[9px] md:text-[12px] break-words hyphens-auto'
                         }
                     `}
@@ -1233,8 +1237,6 @@ export default function MenuSection() {
                                 `}
                             >
 
-                                {/* <Plus className="w-5 h-5" /> */}
-
                                 <span>
                                     {isSelectedBox ? 'ضيف للأوردر' : 'اختار بوكس الأول'}
                                 </span>
@@ -1593,8 +1595,6 @@ export default function MenuSection() {
                                     hover:scale-[1.01]
                                 `}
                             >
-
-                                {/* <ShoppingBag className="w-5 h-5" /> */}
 
                                 <span>
                                     اطلب الآن

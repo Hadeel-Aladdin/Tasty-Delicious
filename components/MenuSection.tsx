@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -122,6 +122,11 @@ type CartLine = {
     Menu Section
 ===================================================== */
 
+// If the visitor leaves the tab / app for at least this long and comes back
+// without having added anything to the order, the menu starts fresh.
+// Set it to 0 to reset on every return.
+const RESET_AFTER_AWAY_MS = 5 * 60 * 1000;
+
 export default function MenuSection() {
 
     const [selectedBox, setSelectedBox] = useState<Box>(boxes[0]);
@@ -137,6 +142,53 @@ export default function MenuSection() {
     // Tracks whether the user has actively picked a box,
     // so the box image only locks in after a real selection
     const [isSelectedBox, setIsSelectedBox] = useState<boolean>(false);
+
+
+    /* =====================================================
+        Fresh start on return (only while the order is empty)
+    ===================================================== */
+
+    useEffect(() => {
+        // Once something is in the order, leave everything as it is
+        if (cart.length > 0) return;
+
+        let hiddenAt: number | null = null;
+
+        const resetMenu = () => {
+            setSelectedBox(boxes[0]);
+            setIsSelectedBox(false);
+            setQuantity(1);
+            setOrderNotes('');
+        };
+
+        // Tab / app comes back to the foreground after a while
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'hidden') {
+                hiddenAt = Date.now();
+                return;
+            }
+
+            if (hiddenAt !== null && Date.now() - hiddenAt >= RESET_AFTER_AWAY_MS) {
+                resetMenu();
+            }
+
+            hiddenAt = null;
+        };
+
+        // The page is restored from the browser's back/forward cache
+        // (e.g. the visitor left the site and pressed Back)
+        const handlePageShow = (event: PageTransitionEvent) => {
+            if (event.persisted) resetMenu();
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('pageshow', handlePageShow);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('pageshow', handlePageShow);
+        };
+    }, [cart.length]);
 
 
     /* =====================================================

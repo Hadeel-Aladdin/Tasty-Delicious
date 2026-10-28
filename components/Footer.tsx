@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Clock, MapPin } from "lucide-react";
-import { montez, zain } from "../app/font";
+
 
 function Footer() {
     return (
@@ -11,7 +11,7 @@ function Footer() {
             ===================================================== */}
             <div className="hidden md:block">
                 {/* تم تعديل الحشو الجانبي px-10 md:px-16 إلى px-4 md:px-8 لتقليل المسافات الجانبية */}
-                <div dir="rtl" className={`${zain.className} max-w-[1400px] mx-auto px-4 md:px-8 grid grid-cols-3 gap-8 items-start`}>
+                <div dir="rtl" className={`font-zain max-w-[1400px] mx-auto px-4 md:px-8 grid grid-cols-3 gap-8 items-start`}>
 
                     {/* العمود الأول (يمين): تواصل معنا */}
                     <div className="flex flex-col items-start gap-3">
@@ -49,7 +49,7 @@ function Footer() {
                         {/* Brand Logo & Slogan */}
                         <a href="#hero" className="flex flex-col items-start group">
                             <div className="flex items-center gap-2">
-                                <span className={`${montez.className} text-3xl md:text-4xl text-mustard transition-transform duration-300 group-hover:scale-105`}>
+                                <span className={`font-montez text-3xl md:text-4xl text-mustard transition-transform duration-300 group-hover:scale-105`}>
                                     Tasty & Delicious
                                 </span>
                                 <Image
@@ -62,7 +62,7 @@ function Footer() {
                             </div>
                             {/* السلوجان */}
                             <span className="text-sm font-normal text-espresso/70 dark:text-cream/70 mt-1">
-                                تجربة مختلفة... طعم مختلف ✨
+                                تجربة مختلفة... طعم مختلف 
                             </span>
                         </a>
 
@@ -92,7 +92,7 @@ function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className={`max-w-[1400px] mx-auto px-4 md:px-8 mt-8 pt-4 border-t border-black/10 dark:border-cream/10 text-center ${zain.className} text-sm font-normal text-espresso/70 dark:text-cream/70`}>
+                <div className={`max-w-[1400px] mx-auto px-4 md:px-8 mt-8 pt-4 border-t border-black/10 dark:border-cream/10 text-center font-zain text-sm font-normal text-espresso/70 dark:text-cream/70`}>
                     © {new Date().getFullYear()} Tasty & Delicious جميع الحقوق محفوظة لـ
                 </div>
             </div>
@@ -101,13 +101,13 @@ function Footer() {
             {/* =====================================================
                 Mobile Footer (md and below) - Stacked vertically
             ===================================================== */}
-            <div dir="rtl" className={`${zain.className} md:hidden flex flex-col items-center gap-8 px-6 text-center`}>
+            <div dir="rtl" className={`font-zain md:hidden flex flex-col items-center gap-8 px-6 text-center`}>
 
                 {/* 1. Brand & Slogan & Socials */}
                 <div className="flex flex-col items-center gap-3 group">
                     <a href="#hero" className="flex flex-col items-center gap-1">
                         <div className="flex items-center gap-2">
-                            <span className={`${montez.className} text-3xl text-mustard`}>
+                            <span className={`font-montez text-3xl text-mustard`}>
                                 Tasty & Delicious
                             </span>
                             <Image

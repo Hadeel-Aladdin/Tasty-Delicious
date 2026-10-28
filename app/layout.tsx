@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Providers from "./providers";
-//import { montez, moonDance, zain, arefRuqaa } from "./font";
+import { zain, aref, montez } from "./font";
 import "./globals.css";
 
 
@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`h-full antialiased scroll-smooth`}
+      className={`h-full antialiased scroll-smooth ${zain.variable} ${montez.variable} ${aref.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

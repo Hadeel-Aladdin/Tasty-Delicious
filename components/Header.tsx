@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { List, X } from "lucide-react";
 import { useTheme } from "next-themes";
-import { montez, zain } from "../app/font";
 import Switch from "@/components/ThemeToggle";
+
+
 
 function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -45,13 +46,13 @@ function Header() {
                             transition-all duration-300
                         "
                     />
-                    <h1 className={`${montez.className} text-2xl sm:text-3xl text-mustard whitespace-nowrap`}>
+                    <h1 className={`font-montez text-2xl sm:text-3xl text-mustard whitespace-nowrap`}>
                         Tasty & Delicious
                     </h1>
                 </a>
 
                 {/* Desktop Nav Links */}
-                <nav className={`${zain.className} hidden md:flex items-center gap-6 font-semibold text-xl text-espresso/80 dark:text-cream`}>
+                <nav className={`font-zain hidden md:flex items-center gap-6 font-semibold text-xl text-espresso/80 dark:text-cream`}>
                     <a href="#hero" className="hover:text-mustard transition-colors">الرئيسة</a>
                     <a href="#offers" className="hover:text-mustard transition-colors">العروض</a>
                     <a href="#menu" className="hover:text-mustard transition-colors">المنيو</a>
@@ -75,7 +76,7 @@ function Header() {
                         href="https://wa.me/201228134545?text=أهلاً،%20عايز%20أطلب%20أوردر"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`${zain.className} bg-mustard text-cream dark:bg-mustard dark:text-espresso font-bold text-base sm:text-lg px-4 sm:px-5 py-1.5 rounded-full hover:bg-cream hover:border-mustard hover:border-2 hover:text-mustard dark:hover:bg-cream dark:hover:text-espresso transition-all duration-300 shadow-md transform hover:scale-105 whitespace-nowrap`}
+                        className={`font-zain bg-mustard text-cream dark:bg-mustard dark:text-espresso font-bold text-base sm:text-lg px-4 sm:px-5 py-1.5 rounded-full hover:bg-cream hover:border-mustard hover:border-2 hover:text-mustard dark:hover:bg-cream dark:hover:text-espresso transition-all duration-300 shadow-md transform hover:scale-105 whitespace-nowrap`}
                     >
                         اطلب الآن
                     </a>
@@ -94,7 +95,7 @@ function Header() {
             {/* Mobile Navigation Drawer / Dropdown */}
             {isMenuOpen && (
                 <div className="md:hidden bg-cream/95 dark:bg-espresso/95 backdrop-blur-md border-b border-mustard/20 w-full py-6 px-4 shadow-lg transition-all duration-300">
-                    <nav className={`${zain.className} flex flex-col items-center justify-center gap-5 text-2xl font-bold text-espresso dark:text-cream text-center`}>
+                    <nav className={`font-zain flex flex-col items-center justify-center gap-5 text-2xl font-bold text-espresso dark:text-cream text-center`}>
                         <a
                             href="#hero"
                             onClick={() => setIsMenuOpen(false)}

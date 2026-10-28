@@ -11,20 +11,9 @@ import {
     Trash2,
 } from 'lucide-react';
 
-import { Aref_Ruqaa, Zain } from 'next/font/google';
-
 import { boxes } from '@/data/box';
 import type { Box } from '@/types/product';
 
-const aref = Aref_Ruqaa({
-    weight: ['400', '700'],
-    subsets: ['arabic'],
-});
-
-const zain = Zain({
-    weight: ['400', '700', '800'],
-    subsets: ['arabic'],
-});
 
 
 /* =====================================================
@@ -383,7 +372,7 @@ export default function MenuSection() {
                     justify-center
                     p-0.5
                     text-center
-                    ${aref.className}
+                    font-aref
 
                     ${isSelected
                         ? 'scale-110 shadow-md ring-2 ring-espresso/20 dark:ring-cream/20'
@@ -457,7 +446,7 @@ export default function MenuSection() {
                 {cartQty > 0 && (
                     <span
                         className={`
-                            ${zain.className}
+                            font-zain
                             absolute
                             -bottom-1
                             -right-1
@@ -514,7 +503,7 @@ export default function MenuSection() {
 
                     <h2
                         className={`
-                            ${zain.className}
+                            font-zain
                             text-4xl
                             md:text-5xl
                             font-bold
@@ -529,7 +518,7 @@ export default function MenuSection() {
 
                     <div
                         className={`
-                            ${zain.className}
+                            font-zain
                             text-base
                             md:text-lg
                             leading-8
@@ -718,7 +707,7 @@ export default function MenuSection() {
 
                                     <p
                                         className={`
-                                            ${zain.className}
+                                            font-zain
                                             text-center
                                             text-base
                                             md:text-lg
@@ -742,7 +731,7 @@ export default function MenuSection() {
                                 text-center
                                 text-espresso
                                 dark:text-cream
-                                ${zain.className}
+                                font-zain
                                 mt-1
                                 md:mt-4
                             `}
@@ -811,7 +800,7 @@ export default function MenuSection() {
 
                                         <h2
                                             className={`
-                                                ${aref.className}
+                                                font-aref
                                                 text-3xl
                                                 sm:text-4xl
                                                 md:text-5xl
@@ -891,7 +880,7 @@ export default function MenuSection() {
 
                                     <p
                                         className={`
-                                            ${zain.className}
+                                            font-zain
                                             text-lg
                                             md:text-xl
                                             text-espresso/80
@@ -952,7 +941,7 @@ export default function MenuSection() {
 
                                                     <span
                                                         className={`
-                                                            ${zain.className}
+                                                            font-zain
                                                             text-sm
                                                             sm:text-base
                                                             md:text-lg
@@ -998,7 +987,7 @@ export default function MenuSection() {
 
                                     <h2
                                         className={`
-                                            ${zain.className}
+                                            font-zain
                                             text-3xl
                                             sm:text-4xl
                                             md:text-5xl
@@ -1012,7 +1001,7 @@ export default function MenuSection() {
 
                                     <p
                                         className={`
-                                            ${zain.className}
+                                            font-zain
                                             text-lg
                                             md:text-xl
                                             text-espresso/70
@@ -1230,7 +1219,7 @@ export default function MenuSection() {
 
                                 <span
                                     className={`
-                                        ${zain.className}
+                                        font-zain
                                         text-2xl
                                         font-black
                                         px-4
@@ -1288,7 +1277,7 @@ export default function MenuSection() {
                                     py-3
                                     rounded-full
                                     font-bold
-                                    ${zain.className}
+                                    font-zain
                                     text-lg
                                     md:text-xl
                                     flex-1
@@ -1302,7 +1291,7 @@ export default function MenuSection() {
                             >
 
                                 <span>
-                                    {isSelectedBox ? 'ضيف للأوردر' : 'اختار بوكس الأول'}
+                                    {isSelectedBox ? 'أضف لطلبك' : 'اختار بوكس الأول'}
                                 </span>
 
                                 {isSelectedBox && (
@@ -1359,7 +1348,7 @@ export default function MenuSection() {
 
                                         <h3
                                             className={`
-                                                ${zain.className}
+                                                font-zain
                                                 text-lg
                                                 md:text-xl
                                                 font-bold
@@ -1368,7 +1357,7 @@ export default function MenuSection() {
                                                 mb-1
                                             `}
                                         >
-                                            أوردرك
+                                            الطلب
                                         </h3>
 
 
@@ -1385,7 +1374,7 @@ export default function MenuSection() {
                                                     <div className="flex-1 min-w-0">
                                                         <p
                                                             className={`
-                                                                ${zain.className}
+                                                                font-zain
                                                                 text-base
                                                                 md:text-lg
                                                                 font-bold
@@ -1399,7 +1388,7 @@ export default function MenuSection() {
 
                                                         <p
                                                             className={`
-                                                                ${zain.className}
+                                                                font-zain
                                                                 text-sm
                                                                 text-espresso/60
                                                                 dark:text-cream/60
@@ -1436,7 +1425,7 @@ export default function MenuSection() {
 
                                                         <span
                                                             className={`
-                                                                ${zain.className}
+                                                                font-zain
                                                                 text-lg
                                                                 font-black
                                                                 px-3
@@ -1476,7 +1465,7 @@ export default function MenuSection() {
 
                                                     <span
                                                         className={`
-                                                            ${zain.className}
+                                                            font-zain
                                                             text-base
                                                             md:text-lg
                                                             font-bold
@@ -1537,7 +1526,7 @@ export default function MenuSection() {
                                         >
                                             <span
                                                 className={`
-                                                    ${zain.className}
+                                                    font-zain
                                                     text-lg
                                                     font-bold
                                                     text-espresso
@@ -1549,7 +1538,7 @@ export default function MenuSection() {
 
                                             <span
                                                 className={`
-                                                    ${zain.className}
+                                                    font-zain
                                                     text-xl
                                                     font-black
                                                     text-espresso
@@ -1577,7 +1566,7 @@ export default function MenuSection() {
                             <label
                                 htmlFor="order-notes"
                                 className={`
-                                    ${zain.className}
+                                    font-zain
                                     block
                                     text-lg
                                     font-bold
@@ -1586,7 +1575,7 @@ export default function MenuSection() {
                                     mb-2
                                 `}
                             >
-                                عندك أي ملاحظات على الأوردر؟
+                                 ملاحظات
                             </label>
 
                             <textarea
@@ -1599,7 +1588,7 @@ export default function MenuSection() {
                                 rows={3}
                                 placeholder="لو حابب تختار معاد تسليم معين، او تضيف حاجة على الاوردر"
                                 className={`
-                                    ${zain.className}
+                                    font-zain
                                     w-full
                                     resize-none
                                     rounded-2xl
@@ -1650,7 +1639,7 @@ export default function MenuSection() {
                                     rounded-full
                                     font-bold
                                     shadow-md
-                                    ${zain.className}
+                                    font-zain
                                     text-lg
                                     md:text-xl
                                     w-full
@@ -1688,7 +1677,7 @@ export default function MenuSection() {
                                     rounded-full
                                     font-bold
                                     cursor-not-allowed
-                                    ${zain.className}
+                                    font-zain
                                     text-lg
                                     md:text-xl
                                     w-full
@@ -1698,7 +1687,7 @@ export default function MenuSection() {
                             >
 
                                 <span>
-                                    ضيف بوكس للأوردر الأول
+                                    أضف بوكس للأوردر أولا
                                 </span>
 
                             </button>
@@ -1709,7 +1698,7 @@ export default function MenuSection() {
 
                         <p
                             className={`
-                                ${zain.className}
+                                font-zain
                                 text-center
                                 sm:text-right
                                 text-sm

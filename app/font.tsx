@@ -1,5 +1,4 @@
-import localFont from "next/font/local";
-import { Zain, Aref_Ruqaa } from "next/font/google";
+import {Montez, Zain, Aref_Ruqaa } from "next/font/google";
 
 export const zain = Zain({
   subsets: ["arabic", "latin"],
@@ -13,11 +12,8 @@ export const aref = Aref_Ruqaa({
   variable: "--font-aref",
 });
 
-export const montez = localFont({
-  src: "./fonts/Montez-Regular.ttf",
-  variable: "--font-montez",
-});
-export const moonDance = localFont({
-  src: "./fonts/MoonDance-Regular.ttf",
-  variable: "--font-moonDance",
+export const montez = Montez({
+    weight: '400',
+    subsets: ['latin'],
+    variable: "--font-montez",
 });

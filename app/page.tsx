@@ -4,7 +4,6 @@ import HeroSection from "@/components/HeroSection";
 import MenuSection from "@/components/MenuSection";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import OurStory from "../components/OurStory";
-//import { montez, moonDance, zain, aref } from "./font";
 
 function Home() {
   return (

@@ -2,10 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zain } from 'next/font/google';
-import { Quote, HeartPulse } from 'lucide-react';
-
-const zain = Zain({ weight: ['400', '700', '800', '900'], subsets: ['arabic'] });
+import { Quote } from 'lucide-react';
 
 export default function OurStory() {
     return (
@@ -52,14 +49,14 @@ export default function OurStory() {
 
                     {/* Section Title */}
                     <div className="text-center mb-10">
-                        <h2 className={`${zain.className} text-4xl md:text-5xl font-black text-espresso dark:text-cream mb-4 flex items-center justify-center gap-3`}>
+                        <h2 className={`font-zain text-4xl md:text-5xl font-black text-espresso dark:text-cream mb-4 flex items-center justify-center gap-3`}>
                             قصتنا
                         </h2>
                         <div className="w-16 h-1.5 bg-mustard rounded-full mx-auto"></div>
                     </div>
 
                     {/* Story Content */}
-                    <div className={`${zain.className} space-y-8 text-espresso/85 dark:text-cream/85 text-lg md:text-2xl font-bold leading-relaxed`}>
+                    <div className={`font-zain space-y-8 text-espresso/85 dark:text-cream/85 text-lg md:text-2xl font-bold leading-relaxed`}>
                         
                         {/* Intro */}
                         <p className="text-center text-xl md:text-3xl font-black text-espresso dark:text-cream leading-normal">
@@ -97,7 +94,6 @@ export default function OurStory() {
 
                         {/* Climax / Conclusion */}
                         <div className="pt-8 mt-8 border-t border-espresso/10 dark:border-cream/10 text-center">
-                            <HeartPulse className="w-8 h-8 text-mustard mx-auto mb-4 animate-pulse" />
                             <p className="text-2xl md:text-4xl font-black text-espresso dark:text-cream leading-normal">
                                 لأن أحلى برجر مش بس هو اللي طعمه حلو…<br/>
                                 <span className="text-mustard">هو اللي معمول على مزاجك إنت.</span>

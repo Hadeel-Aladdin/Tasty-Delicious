@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { montez, zain, aref } from "../app/font";
 
 function HeroSection() {
     return (
@@ -32,7 +31,7 @@ function HeroSection() {
                             src="/hero-img.png"
                             alt="Tasty Burger"
                             fill
-                            sizes="260px"
+                            sizes="(min-width: 640px) 400px, 260px"
                             className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300"
                             priority
                         />
@@ -70,7 +69,7 @@ function HeroSection() {
                                 x="50"
                                 y="43"
                                 textAnchor="middle"
-                                className={`${aref.className} fill-espresso dark:fill-cream font-bold text-[10.5px] sm:text-[11.5px]`}
+                                className={`font-aref fill-espresso dark:fill-cream font-bold text-[10.5px] sm:text-[11.5px]`}
                             >
                                 <tspan x="50" dy="5">Premium</tspan>
                                 <tspan x="50" dy="11">Quality</tspan>
@@ -90,15 +89,15 @@ function HeroSection() {
                 {/* قسم النصوص: ترتيبه 2 في الموبايل (عشان يظهر تحت البرجر) */}
                 <div className="order-2 lg:order-1 lg:col-span-7 space-y-8 z-10 text-right">
 
-                    <h1 className={`${zain.className} font-bold text-4xl md:text-5xl lg:text-7xl text-espresso dark:text-cream leading-tight transition-colors duration-300`}>
+                    <h1 className={`font-zain font-bold text-4xl md:text-5xl lg:text-7xl text-espresso dark:text-cream leading-tight transition-colors duration-300`}>
                         عملناها على مزاجك
                     </h1>
 
-                    <div className={`${zain.className} text-xl md:text-2xl text-espresso/80 dark:text-cream/80 space-y-4 leading-relaxed font-semibold transition-colors duration-300`}>
+                    <div className={`font-zain text-xl md:text-2xl text-espresso/80 dark:text-cream/80 space-y-4 leading-relaxed font-semibold transition-colors duration-300`}>
 
                         {/*  عُرض في الموبايل والتابلت فقط (يختفي من الشاشات الكبيرة lg) */}
                         <div className="block lg:hidden space-y-4">
-                            <p className={`${montez.className} font-light text-mustard text-5xl sm:text-6xl drop-shadow-sm`}>
+                            <p className={`font-montez font-light text-mustard text-5xl sm:text-6xl drop-shadow-sm`}>
                                 Tasty &amp; Delicious
                             </p>
                             <p>
@@ -112,7 +111,7 @@ function HeroSection() {
                         {/* يُعرض في الشاشات الكبيرة lg فقط (مخفي في الموبايل والتابلت) */}
                         <div dir="rtl" className="hidden lg:block space-y-4">
                             <p>
-                                <span className={`${montez.className} font-light text-mustard text-5xl sm:text-6xl inline-block mr-2`}>
+                                <span className={`font-montez font-light text-mustard text-5xl sm:text-6xl inline-block mr-2`}>
                                     Tasty &amp; Delicious
                                 </span>
                                 بتقدملك بوكسات برجر
@@ -130,7 +129,7 @@ function HeroSection() {
                         <a
                             href="#menuBoxes"
                             rel="noopener noreferrer"
-                            className={`${zain.className} inline-block bg-mustard text-cream dark:text-espresso hover:bg-cream dark:hover:bg-espresso hover:text-mustard dark:hover:text-mustard border-2 border-transparent hover:border-mustard dark:hover:border-mustard font-zain text-xl sm:text-2xl md:text-3xl font-bold px-8 sm:px-10 py-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer`}
+                            className={`font-zain inline-block bg-mustard text-cream dark:text-espresso hover:bg-cream dark:hover:bg-espresso hover:text-mustard dark:hover:text-mustard border-2 border-transparent hover:border-mustard dark:hover:border-mustard font-zain text-xl sm:text-2xl md:text-3xl font-bold px-8 sm:px-10 py-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer`}
                         >
                             اختار بوكس السهرة
                         </a>

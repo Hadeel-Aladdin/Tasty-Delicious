@@ -33,7 +33,7 @@ function HeroSection() {
                             fill
                             sizes="(min-width: 640px) 400px, 260px"
                             className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300"
-                            priority
+                            preload
                         />
                     </div>
 

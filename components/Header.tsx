@@ -37,10 +37,10 @@ function Header() {
                     <Image
                         src="/icon.png"
                         alt="T&D Logo"
-                        width={32}
-                        height={32}
+                        width={512}
+                        height={512}
                         className="
-                            w-auto h-auto m-1 p-1.5 
+                            w-auto h-10 m-1 p-1.5 
                             rounded-full 
                             bg-mustard 
                             transition-all duration-300

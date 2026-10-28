@@ -55,9 +55,9 @@ function Footer() {
                                 <Image
                                     src="/icon.png"
                                     alt="T&D Logo"
-                                    width={30}
-                                    height={30}
-                                    className="w-auto h-auto m-0.5 p-1 rounded-full bg-mustard transition-all duration-300 group-hover:rotate-12"
+                                    width={512}
+                                    height={512}
+                                    className="w-auto h-10 m-0.5 p-1 rounded-full bg-mustard transition-all duration-300 group-hover:rotate-12"
                                 />
                             </div>
                             {/* السلوجان */}

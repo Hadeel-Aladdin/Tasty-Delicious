@@ -9,12 +9,12 @@ function Home() {
   return (
     <>
       <Header />
-      {/*Main Body*/}
-      {/*Menu Section*/}
-      <HeroSection />
-      <WhyChooseUs />
-      <MenuSection />
-      <OurStory />
+      <main>
+        <HeroSection />
+        <WhyChooseUs />
+        <MenuSection />
+        <OurStory />
+      </main>
       <Footer />
     </>
   );

@@ -12,7 +12,7 @@ const Switch: React.FC<SwitchProps> = ({ checked, onChange }) => {
   return (
     <StyledWrapper>
       <label className="switch">
-        <input id="input" type="checkbox" checked={checked} onChange={onChange} />
+        <input id="input" type="checkbox" aria-label="تبديل الوضع الليلي" checked={checked} onChange={onChange} />
         <div className="slider round">
           <div className="sun-moon">
             <svg id="moon-dot-1" className="moon-dot" viewBox="0 0 100 100">
